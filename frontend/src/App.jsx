@@ -8,6 +8,7 @@ import Seminar from './pages/admin/Seminar';
 import Festival from './pages/admin/Festival';
 import UserDashboard from './pages/user/Dashboard';
 import Orders from './pages/user/Order';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   const role = localStorage.getItem('role');
@@ -16,7 +17,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={role === 'admin' ? <AdminDashboard /> : <UserDashboard />} />
         <Route path="/admin/olahraga" element={role === 'admin' ? <Olahraga /> : <Login />} />
