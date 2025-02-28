@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const ticketController = require('../controllers/ticketController');
+const seminarController = require('../controllers/seminarController');
 const router = express.Router();
 
 const authenticate = (req, res, next) => {
@@ -14,7 +14,8 @@ const authenticate = (req, res, next) => {
   });
 };
 
-router.post('/tickets/multiple', authenticate, ticketController.createTickets);
-router.get('/tickets/:eventId/:eventCategory', ticketController.getTicketsByEvent);
+router.post('/seminar', authenticate, seminarController.createEvent);
+router.get('/seminar/admin', authenticate, seminarController.getByAdmin);
+router.get('/seminar', seminarController.getAllPublished);
 
 module.exports = router;

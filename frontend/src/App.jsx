@@ -7,6 +7,7 @@ import Konser from './pages/admin/Konser';
 import Seminar from './pages/admin/Seminar';
 import Festival from './pages/admin/Festival';
 import UserDashboard from './pages/user/Dashboard';
+import Orders from './pages/user/Order';
 
 function App() {
   const role = localStorage.getItem('role');
@@ -22,6 +23,7 @@ function App() {
         <Route path="/admin/konser" element={role === 'admin' ? <Konser /> : <Login />} />
         <Route path="/admin/seminar" element={role === 'admin' ? <Seminar /> : <Login />} />
         <Route path="/admin/festival" element={role === 'admin' ? <Festival /> : <Login />} />
+        <Route path="/orders" element={role === 'user' ? <Orders /> : <Login />} /> 
       </Routes>
     </Router>
   );

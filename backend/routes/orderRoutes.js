@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const ticketController = require('../controllers/ticketController');
+const orderController = require('../controllers/orderController');
 const router = express.Router();
 
 const authenticate = (req, res, next) => {
@@ -14,7 +14,9 @@ const authenticate = (req, res, next) => {
   });
 };
 
-router.post('/tickets/multiple', authenticate, ticketController.createTickets);
-router.get('/tickets/:eventId/:eventCategory', ticketController.getTicketsByEvent);
+router.post('/orders', authenticate, orderController.createOrder);
+router.get('/orders/user', authenticate, orderController.getUserOrders);
+router.get('/orders/pending', authenticate, orderController.getPendingOrders);
+router.put('/orders/approve/:orderId', authenticate, orderController.approveOrder);
 
 module.exports = router;

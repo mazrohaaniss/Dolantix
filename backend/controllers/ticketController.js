@@ -1,44 +1,44 @@
 const Ticket = require('../models/ticketModel');
 
 const ticketController = {
-    createTicket: (req, res) => {
-        const { event_id, category, price, stock } = req.body;
-        const ticketData = { event_id, category, price, stock };
-    
-        console.log('Membuat tiket:', ticketData);
+  createTickets: (req, res) => {
+    const { event_id, event_category, tickets } = req.body;
+
+    if (!tickets || !Array.isArray(tickets) || tickets.length === 0) {
+      return res.status(400).json({ message: 'Tickets harus berupa array dan tidak boleh kosong' });
+    }
+
+    console.log('Membuat tiket:', { event_id, event_category, tickets });
+
+    const ticketPromises = tickets.map(ticket => {
+      return new Promise((resolve, reject) => {
+        const ticketData = {
+          event_id,
+          event_category,
+          category: ticket.category,
+          price: ticket.price,
+          stock: ticket.stock
+        };
         Ticket.create(ticketData, (err, result) => {
-          if (err) {
-            console.error('Error membuat tiket:', err);
-            return res.status(500).json({ message: 'Gagal membuat tiket' });
-          }
-          res.status(201).json({ message: 'Tiket berhasil dibuat', ticketId: result.insertId });
+          if (err) reject(err);
+          else resolve(result);
         });
-      },
-    
-      getTicketsByEvent: (req, res) => {
-        const eventId = req.params.eventId;
-        Ticket.getByEvent(eventId, (err, results) => {
-          if (err) return res.status(500).json({ message: 'Gagal mengambil tiket' });
-          res.json(results);
-        });
-      },
-
-  updateTicket: (req, res) => {
-    const id = req.params.id;
-    const { category, price, stock } = req.body;
-    const ticketData = { category, price, stock };
-
-    Ticket.update(id, ticketData, (err) => {
-      if (err) return res.status(500).json({ message: 'Gagal mengupdate tiket' });
-      res.json({ message: 'Tiket berhasil diupdate' });
+      });
     });
+
+    Promise.all(ticketPromises)
+      .then(() => res.status(201).json({ message: 'Semua tiket berhasil dibuat' }))
+      .catch(err => {
+        console.error('Error membuat tiket:', err);
+        res.status(500).json({ message: 'Gagal membuat tiket' });
+      });
   },
 
-  deleteTicket: (req, res) => {
-    const id = req.params.id;
-    Ticket.delete(id, (err) => {
-      if (err) return res.status(500).json({ message: 'Gagal menghapus tiket' });
-      res.json({ message: 'Tiket berhasil dihapus' });
+  getTicketsByEvent: (req, res) => {
+    const { eventId, eventCategory } = req.params;
+    Ticket.getByEvent(eventId, eventCategory, (err, results) => {
+      if (err) return res.status(500).json({ message: 'Gagal mengambil tiket' });
+      res.json(results);
     });
   },
 };

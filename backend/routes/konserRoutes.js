@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const eventController = require('../controllers/eventController');
+const konserController = require('../controllers/konserController');
 const router = express.Router();
 
 const authenticate = (req, res, next) => {
@@ -14,9 +14,8 @@ const authenticate = (req, res, next) => {
   });
 };
 
-router.post('/events', authenticate, eventController.createEvent);
-router.get('/events/admin', authenticate, eventController.getAdminEvents);
-router.get('/events', eventController.getAllEvents);
-router.get('/events/category/:category', eventController.getEventsByCategory);
+router.post('/konser', authenticate, konserController.createEvent);
+router.get('/konser/admin', authenticate, konserController.getByAdmin);
+router.get('/konser', konserController.getAllPublished);
 
 module.exports = router;
