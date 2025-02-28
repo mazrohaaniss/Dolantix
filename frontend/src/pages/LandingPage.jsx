@@ -73,9 +73,12 @@ const LandingPage = () => {
               Beli tiket untuk berbagai acara di Semarang seperti olahraga, festival, konser, dan seminar dengan mudah dan cepat.
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center">
-              <a href="#events" className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105">
-                Jelajahi Event
-              </a>
+            <Link 
+            to="/login" 
+            className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105"
+            >
+            Jelajahi Event
+            </Link>
               <a href="#categories" className="bg-white hover:bg-gray-100 text-blue-600 text-lg font-medium px-8 py-3 rounded-full shadow-lg border border-blue-200 transition transform hover:scale-105">
                 Lihat Kategori
               </a>
