@@ -22,30 +22,30 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`transition-all duration-300 ease-in-out fixed top-0 left-0 h-screen bg-gradient-to-b from-blue-900 to-indigo-900 text-white shadow-xl z-10 ${
+      className={`transition-all duration-300 ease-in-out fixed top-0 left-0 h-screen bg-gradient-to-b from-blue-600 to-blue-900 text-white shadow-xl z-10 ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
       {/* Header/Logo Section */}
-      <div className="flex items-center justify-between p-4 border-b border-blue-800">
+      <div className="flex items-center justify-between p-4 border-b border-blue-500">
         {!collapsed && (
           <div className="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
             </svg>
-            <h1 className="text-xl font-bold tracking-wider">DOLANTIX</h1>
+            <h1 className="text-xl font-bold tracking-wider text-white">DOLANTIX</h1>
           </div>
         )}
         {collapsed && (
           <div className="w-full flex justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
             </svg>
           </div>
         )}
         <button 
           onClick={() => setCollapsed(!collapsed)}
-          className="text-blue-300 hover:text-white transition-colors"
+          className="text-blue-300 hover:text-blue-200 transition-colors"
         >
           {collapsed ? (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,13 +61,13 @@ const Sidebar = () => {
 
       {/* Admin Info */}
       {!collapsed && (
-        <div className="p-4 border-b border-blue-800">
+        <div className="p-4 border-b border-blue-500">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
               A
             </div>
             <div>
-              <h3 className="font-medium">Admin</h3>
+              <h3 className="font-medium text-white">Admin</h3>
               <p className="text-xs text-blue-300">Super Admin</p>
             </div>
           </div>
@@ -83,8 +83,8 @@ const Sidebar = () => {
                 to={item.path}
                 className={`flex items-center py-3 px-4 rounded-lg transition-colors ${
                   isActive(item.path)
-                    ? 'bg-blue-700 text-white'
-                    : 'text-blue-100 hover:bg-blue-800'
+                    ? 'bg-blue-500 text-white'
+                    : 'text-blue-100 hover:bg-blue-700'
                 }`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${collapsed ? 'mx-auto' : 'mr-3'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
