@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from './components/footer';
+import Footer from '../components/footer';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -204,8 +204,8 @@ const LandingPage = () => {
         )}
       </header>
 
-      {/* Hero Section / Carousel */}
-      <section className="relative h-[70vh] overflow-hidden">
+      {/* Hero Section / Carousel - Full Screen */}
+      <section className="relative h-screen w-full overflow-hidden">
         {banners.map((banner, index) => (
           <div
             key={banner.id}
@@ -214,6 +214,8 @@ const LandingPage = () => {
               backgroundImage: `url(${banner.image})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
+              height: '100vh', /* Explicitly set full viewport height */
+              width: '100%'
             }}
           >
             <div className={`absolute inset-0 bg-gradient-to-r ${banner.className} flex items-center justify-center text-center`}>

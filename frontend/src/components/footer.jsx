@@ -1,5 +1,3 @@
-// src/pages/components/footer.jsx
-
 import React from 'react';
 
 const Footer = () => {
