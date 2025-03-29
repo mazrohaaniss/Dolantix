@@ -12,7 +12,7 @@ const Sidebar = () => {
     { path: '/admin/konser', name: 'Konser', icon: 'music' },
     { path: '/admin/seminar', name: 'Seminar', icon: 'users' },
     { path: '/admin/festival', name: 'Festival', icon: 'star' },
-    { path: '/admin/settings', name: 'Pengaturan', icon: 'settings' },
+    
   ];
 
   // Check if the current path matches or starts with the menu item path

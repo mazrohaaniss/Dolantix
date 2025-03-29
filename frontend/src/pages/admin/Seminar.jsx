@@ -127,171 +127,264 @@ const Seminar = () => {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <div style={{ marginLeft: '220px', padding: '20px', width: '100%' }}>
-        <h1>Manajemen Acara Seminar</h1>
-        <button onClick={handleLogout} style={{ float: 'right' }}>Logout</button>
-
-        <h2>Tambah Acara Seminar</h2>
-        <form onSubmit={handleAddEvent} style={{ marginBottom: '20px' }}>
-          <input
-            type="text"
-            name="name"
-            value={newEvent.name}
-            onChange={handleEventInputChange}
-            placeholder="Nama Acara"
-            required
-            style={{ display: 'block', margin: '5px 0', width: '300px' }}
-          />
-          <textarea
-            name="description"
-            value={newEvent.description}
-            onChange={handleEventInputChange}
-            placeholder="Deskripsi"
-            style={{ display: 'block', margin: '5px 0', width: '300px' }}
-          />
-          <input
-            type="datetime-local"
-            name="date"
-            value={newEvent.date}
-            onChange={handleEventInputChange}
-            required
-            style={{ display: 'block', margin: '5px 0', width: '300px' }}
-          />
-          <input
-            type="text"
-            name="location"
-            value={newEvent.location}
-            onChange={handleEventInputChange}
-            placeholder="Lokasi"
-            required
-            style={{ display: 'block', margin: '5px 0', width: '300px' }}
-          />
-          <input
-            type="text"
-            name="poster"
-            value={newEvent.poster}
-            onChange={handleEventInputChange}
-            placeholder="URL Poster"
-            style={{ display: 'block', margin: '5px 0', width: '300px' }}
-          />
-          <button type="submit">Tambah Acara</button>
-        </form>
-
-        <h2>Tambah Tiket</h2>
-        <form onSubmit={handleSaveTickets} style={{ marginBottom: '20px' }}>
-          <select
-            value={selectedEventId}
-            onChange={(e) => setSelectedEventId(e.target.value)}
-            required
-            style={{ display: 'block', margin: '5px 0', width: '300px' }}
+      <div className="ml-56 p-6 flex-1">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">Manajemen Acara Seminar</h1>
+          <button 
+            onClick={handleLogout} 
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
           >
-            <option value="">Pilih Acara</option>
-            {events.map(event => (
-              <option key={event.id} value={event.id}>{event.name}</option>
-            ))}
-          </select>
-          {selectedEventId && (
-            <>
-              <h3>Tambah Kategori Tiket</h3>
-              <div style={{ marginBottom: '10px' }}>
+            Logout
+          </button>
+        </div>
+
+        {/* Add Seminar Form */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Tambah Acara Seminar</h2>
+          <form onSubmit={handleAddEvent}>
+            <div className="space-y-4">
+              <div>
                 <input
                   type="text"
-                  name="category"
-                  value={newCategory.category}
-                  onChange={handleCategoryInputChange}
-                  placeholder="Jenis Tiket (contoh: Reguler)"
-                  style={{ display: 'inline-block', margin: '5px 10px 5px 0', width: '150px' }}
+                  name="name"
+                  value={newEvent.name}
+                  onChange={handleEventInputChange}
+                  placeholder="Nama Acara"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+              </div>
+              <div>
+                <textarea
+                  name="description"
+                  value={newEvent.description}
+                  onChange={handleEventInputChange}
+                  placeholder="Deskripsi"
+                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="3"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <input
+                    type="datetime-local"
+                    name="date"
+                    value={newEvent.date}
+                    onChange={handleEventInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    name="location"
+                    value={newEvent.location}
+                    onChange={handleEventInputChange}
+                    placeholder="Lokasi"
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div>
                 <input
-                  type="number"
-                  name="price"
-                  value={newCategory.price}
-                  onChange={handleCategoryInputChange}
-                  placeholder="Harga (Rp)"
-                  style={{ display: 'inline-block', margin: '5px 10px 5px 0', width: '100px' }}
+                  type="text"
+                  name="poster"
+                  value={newEvent.poster}
+                  onChange={handleEventInputChange}
+                  placeholder="URL Poster"
+                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <input
-                  type="number"
-                  name="stock"
-                  value={newCategory.stock}
-                  onChange={handleCategoryInputChange}
-                  placeholder="Stok"
-                  style={{ display: 'inline-block', margin: '5px 10px 5px 0', width: '80px' }}
-                />
-                <button type="button" onClick={handleAddCategory} style={{ padding: '5px 10px' }}>
-                  Tambah Kategori
+              </div>
+              <div>
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                  Tambah Acara
                 </button>
               </div>
+            </div>
+          </form>
+        </div>
 
-              {ticketCategories.length > 0 && (
+        {/* Add Tickets Form */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Tambah Tiket</h2>
+          <form onSubmit={handleSaveTickets}>
+            <div className="space-y-4">
+              <div>
+                <select
+                  value={selectedEventId}
+                  onChange={(e) => setSelectedEventId(e.target.value)}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Pilih Acara</option>
+                  {events.map(event => (
+                    <option key={event.id} value={event.id}>{event.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              {selectedEventId && (
                 <>
-                  <h4>Kategori Tiket yang Ditambahkan</h4>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '10px' }}>
-                    <thead>
-                      <tr>
-                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Jenis Tiket</th>
-                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Harga (Rp)</th>
-                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Stok</th>
-                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ticketCategories.map((ticket, index) => (
-                        <tr key={index}>
-                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{ticket.category}</td>
-                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{parseFloat(ticket.price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
-                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{ticket.stock}</td>
-                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                            <button type="button" onClick={() => handleRemoveCategory(index)}>Hapus</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <button type="submit">OK - Simpan Tiket</button>
+                  <h3 className="text-lg font-medium text-gray-700 mt-4">Tambah Kategori Tiket</h3>
+                  <div className="flex flex-wrap items-end gap-3">
+                    <div>
+                      <input
+                        type="text"
+                        name="category"
+                        value={newCategory.category}
+                        onChange={handleCategoryInputChange}
+                        placeholder="Jenis Tiket (contoh: Reguler)"
+                        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        name="price"
+                        value={newCategory.price}
+                        onChange={handleCategoryInputChange}
+                        placeholder="Harga (Rp)"
+                        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        name="stock"
+                        value={newCategory.stock}
+                        onChange={handleCategoryInputChange}
+                        placeholder="Stok"
+                        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <button 
+                      type="button" 
+                      onClick={handleAddCategory}
+                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                    >
+                      Tambah Kategori
+                    </button>
+                  </div>
+
+                  {ticketCategories.length > 0 && (
+                    <>
+                      <h4 className="text-md font-medium text-gray-700 mt-4">Kategori Tiket yang Ditambahkan</h4>
+                      <div className="overflow-x-auto rounded-lg border border-gray-200">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Jenis Tiket
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Harga (Rp)
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Stok
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Aksi
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {ticketCategories.map((ticket, index) => (
+                              <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap">{ticket.category}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  {parseFloat(ticket.price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">{ticket.stock}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <button 
+                                    type="button" 
+                                    onClick={() => handleRemoveCategory(index)}
+                                    className="text-red-600 hover:text-red-900"
+                                  >
+                                    Hapus
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="mt-4">
+                        <button 
+                          type="submit"
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        >
+                          OK - Simpan Tiket
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
-            </>
-          )}
-        </form>
-
-        <h2>Daftar Acara dan Tiket</h2>
-        {events.length === 0 ? (
-          <p>Tidak ada acara seminar saat ini.</p>
-        ) : (
-          events.map(event => (
-            <div key={event.id} style={{ marginBottom: '20px' }}>
-              <h3>{event.name} - {new Date(event.date).toLocaleString()} - {event.location}</h3>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Jenis Tiket</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Harga (Rp)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Stok</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(tickets[event.id] || []).map(ticket => (
-                    <tr key={ticket.id}>
-                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{ticket.category}</td>
-                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{ticket.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
-                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{ticket.stock}</td>
-                    </tr>
-                  ))}
-                  {(tickets[event.id] || []).length === 0 && (
-                    <tr>
-                      <td colSpan="3" style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                        Belum ada tiket untuk acara ini
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
             </div>
-          ))
-        )}
+          </form>
+        </div>
+
+        {/* Event List */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Daftar Acara dan Tiket</h2>
+          {events.length === 0 ? (
+            <p className="text-gray-500">Tidak ada acara seminar saat ini.</p>
+          ) : (
+            <div className="space-y-6">
+              {events.map(event => (
+                <div key={event.id} className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-gray-700 mb-3">
+                    {event.name} - {new Date(event.date).toLocaleString()} - {event.location}
+                  </h3>
+                  <div className="overflow-x-auto rounded-lg border border-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Jenis Tiket
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Harga (Rp)
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Stok
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {(tickets[event.id] || []).length > 0 ? (
+                          (tickets[event.id] || []).map(ticket => (
+                            <tr key={ticket.id}>
+                              <td className="px-6 py-4 whitespace-nowrap">{ticket.category}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {ticket.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">{ticket.stock}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                              Belum ada tiket untuk acara ini
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
