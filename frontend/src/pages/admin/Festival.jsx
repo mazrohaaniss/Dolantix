@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../components/navbar';
 
 const Festival = () => {
   const navigate = useNavigate();
@@ -127,18 +127,13 @@ const Festival = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex bg-gray-50 min-h-screen items-center justify-center">
       <Sidebar />
-      <div className="flex-1 p-8 ml-64">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Manajemen Acara Festival</h1>
-          <button 
-            onClick={handleLogout} 
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          >
-            Logout
-          </button>
-        </div>
+      <div className="flex-1 p-25">
+      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+  <h1 className="text-3xl font-bold text-gray-800">Manajemen Acara Festival</h1>
+</div>
+
 
         {/* Add Event Form */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
@@ -367,6 +362,7 @@ const Festival = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

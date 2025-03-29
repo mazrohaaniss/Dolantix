@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../components/navbar';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -100,17 +100,11 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex bg-gray-50 min-h-screen items-center justify-center">
       <Sidebar />
-      <div className="flex-1 ml-64 p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Dolantix Admin Dashboard</h1>
-          <button 
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-          >
-            Logout
-          </button>
+      <div className="flex-1 p-25">
+      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+          <h1 className="text-3xl font-bold text-gray-800">Dolantix Admin Dashboard</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

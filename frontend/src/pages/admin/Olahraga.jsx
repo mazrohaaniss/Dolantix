@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../components/navbar';
 
 const Olahraga = () => {
   const navigate = useNavigate();
@@ -140,17 +140,12 @@ const Olahraga = () => {
   }
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex bg-gray-50 min-h-screen items-center justify-center">
       <Sidebar />
-      <div className="flex-1 ml-64 p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Sports Events Management</h1>
-          <button 
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-          >
-            Logout
-          </button>
+      <div className="flex-1 p-25">
+      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+    
+          <h1 className="text-3xl font-bold text-gray-800">Sports Events Management</h1>
         </div>
 
         {/* Tab Navigation */}
@@ -182,10 +177,11 @@ const Olahraga = () => {
         </div>
 
         {/* Add Event Form */}
-        {activeTab === 'addEvent' && (
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Sports Event</h2>
-            <form onSubmit={handleAddEvent} className="space-y-4">
+        <div className="bg-white rounded-lg shadow p-6 mb-6 min-h-[500px] flex flex-col">
+  {activeTab === 'addEvent' && (
+    <div className="flex-1">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Sports Event</h2>
+      <form onSubmit={handleAddEvent} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Event Name</label>
                 <input
@@ -471,6 +467,7 @@ const Olahraga = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
