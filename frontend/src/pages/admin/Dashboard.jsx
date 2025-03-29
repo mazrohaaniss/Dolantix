@@ -83,10 +83,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate('/', { replace: true });
-  };
 
   if (isLoading) {
     return (

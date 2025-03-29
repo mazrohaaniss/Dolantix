@@ -121,10 +121,6 @@ const Festival = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate('/', { replace: true });
-  };
 
   return (
     <div className="flex bg-gray-50 min-h-screen items-center justify-center">

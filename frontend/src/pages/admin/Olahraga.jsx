@@ -123,10 +123,6 @@ const Olahraga = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate('/', { replace: true });
-  };
 
   if (isLoading) {
     return (
