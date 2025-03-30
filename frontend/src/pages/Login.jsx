@@ -18,7 +18,11 @@ const Login = () => {
       console.log('Mencoba login:', { identifier, password });
       const res = await axios.post('/api/auth/login', { identifier, password });
       console.log('Respon dari server:', res.data);
-
+  
+      if (!res.data.token || !res.data.role) {
+        throw new Error('Login gagal: Data tidak lengkap dari server');
+      }
+  
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', res.data.role);
       localStorage.setItem('username', res.data.username);
@@ -28,10 +32,9 @@ const Login = () => {
         role: localStorage.getItem('role'),
         username: localStorage.getItem('username'),
       });
-
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 100);
+  
+      // Perbaikan: Paksa reload agar role terbaca di App.js
+      window.location.href = '/dashboard';
     } catch (err) {
       console.error('Gagal login:', err.response?.status, err.response?.data || err.message);
       setError(err.response?.data?.message || 'Login gagal. Silakan periksa kredensial Anda.');
@@ -39,6 +42,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="h-screen w-screen overflow-hidden flex">
