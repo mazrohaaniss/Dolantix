@@ -14,13 +14,10 @@ const authenticate = (req, res, next) => {
   });
 };
 
-// Tambahkan endpoint untuk soft delete
 router.put('/orders/:orderId/soft-delete', authenticate, orderController.softDeleteOrder);
-
-// Ambil daftar pesanan yang sudah dihapus
 router.get('/orders/deleted', authenticate, orderController.getDeletedOrders);
-
-// Endpoint lainnya
+router.put('/orders/:orderId/restore', authenticate, orderController.restoreOrder);
+router.delete('/orders/:orderId/hard-delete', authenticate, orderController.hardDeleteOrder);
 router.post('/orders', authenticate, orderController.createOrder);
 router.get('/orders/user', authenticate, orderController.getUserOrders);
 router.get('/orders/pending', authenticate, orderController.getPendingOrders);

@@ -17,9 +17,11 @@ const Orders = () => {
       navigate("/");
     } else {
       fetchOrders();
+      fetchDeletedOrders(); // Ambil data pesanan yang sudah dihapus
     }
   }, [navigate, token, role]);
 
+  // Ambil pesanan aktif (belum dihapus)
   const fetchOrders = async () => {
     try {
       const res = await axios.get("/api/orders/user", {
@@ -31,19 +33,41 @@ const Orders = () => {
     }
   };
 
+  // Ambil pesanan yang sudah dihapus (soft delete)
+  const fetchDeletedOrders = async () => {
+    try {
+      const res = await axios.get("/api/orders/deleted", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setDeletedOrders(res.data);
+    } catch (err) {
+      console.error("Gagal mengambil riwayat hapus:", err);
+    }
+  };
+
+  // Tampilkan modal konfirmasi hapus
   const handleSoftDelete = (order) => {
     setSelectedOrder(order);
     setShowModal(true);
   };
 
+  // Konfirmasi soft delete
   const confirmDelete = async () => {
     if (selectedOrder) {
       try {
-        await axios.put(`/api/orders/${selectedOrder.id}/soft-delete`, {}, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setOrders(orders.filter(order => order.id !== selectedOrder.id));
-        setDeletedOrders([...deletedOrders, selectedOrder]);
+        await axios.put(
+          `/api/orders/${selectedOrder.id}/soft-delete`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Perbarui state setelah soft delete
+        setOrders(orders.filter((order) => order.id !== selectedOrder.id));
+        setDeletedOrders([...deletedOrders, selectedOrder]); // Tambah ke daftar riwayat hapus
+
+        fetchDeletedOrders(); // Refresh daftar riwayat hapus
       } catch (err) {
         console.error("Gagal menghapus pesanan:", err);
       }
@@ -68,7 +92,7 @@ const Orders = () => {
             onClick={() => navigate("/riwayat-hapus", { state: { deletedOrders } })}
             className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
           >
-            Riwayat Hapus
+            Riwayat Hapus ({deletedOrders.length})
           </button>
         </div>
 

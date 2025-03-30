@@ -1,7 +1,6 @@
 const db = require('../config/db');
 
 const Order = {
-  // Menambahkan pesanan baru
   create: (orderData, callback) => {
     const query = `
       INSERT INTO orders (user_id, event_id, event_category, ticket_category, price) 
@@ -13,7 +12,6 @@ const Order = {
     ], callback);
   },
 
-  // Ambil pesanan user yang BELUM dihapus (deleted_at = NULL)
   getByUser: (userId, callback) => {
     const query = `
       SELECT * FROM orders 
@@ -23,7 +21,6 @@ const Order = {
     db.query(query, [userId], callback);
   },
 
-  // Ambil semua pesanan pending yang belum dihapus
   getAllPending: (callback) => {
     const query = `
       SELECT * FROM orders 
@@ -33,19 +30,16 @@ const Order = {
     db.query(query, callback);
   },
 
-  // Update status pesanan
   updateStatus: (orderId, status, callback) => {
     const query = `UPDATE orders SET status = ? WHERE id = ?`;
     db.query(query, [status, orderId], callback);
   },
 
-  // **Soft Delete Pesanan** (hanya update deleted_at, tidak benar-benar dihapus)
   softDelete: (orderId, callback) => {
     const query = `UPDATE orders SET deleted_at = NOW() WHERE id = ?`;
     db.query(query, [orderId], callback);
   },
 
-  // Ambil daftar pesanan yang sudah dihapus (riwayat hapus)
   getDeletedOrders: (callback) => {
     const query = `
       SELECT * FROM orders 
@@ -54,6 +48,15 @@ const Order = {
     `;
     db.query(query, callback);
   },
+restore: (orderId, callback) => {
+  const query = `UPDATE orders SET deleted_at = NULL WHERE id = ?`;
+  db.query(query, [orderId], callback);
+},
+
+hardDelete: (orderId, callback) => {
+  const sql = "DELETE FROM orders WHERE id = ? AND deleted_at IS NOT NULL";
+  db.query(sql, [orderId], callback);
+},
 };
 
 module.exports = Order;

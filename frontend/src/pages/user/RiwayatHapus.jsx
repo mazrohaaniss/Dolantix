@@ -1,60 +1,71 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UserNavbar from "../../components/UserNavbar";
 import axios from "axios";
 
 const RiwayatHapus = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-
-  // Ambil dari localStorage jika ada, jika tidak gunakan dari location.state
-  const [deletedOrders, setDeletedOrders] = useState(() => {
-    const savedOrders = localStorage.getItem("deletedOrders");
-    return savedOrders ? JSON.parse(savedOrders) : location.state?.deletedOrders || [];
-  });
-
+  const [deletedOrders, setDeletedOrders] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const token = localStorage.getItem("token");
 
-  // Simpan deletedOrders ke localStorage setiap kali berubah
   useEffect(() => {
-    localStorage.setItem("deletedOrders", JSON.stringify(deletedOrders));
-  }, [deletedOrders]);
+    fetchDeletedOrders();
+  }, []);
 
-  const handleUndo = async () => {
+  const fetchDeletedOrders = async () => {
     try {
-      await axios.put(`/api/orders/${selectedOrder.id}/restore`);
-      const updatedOrders = deletedOrders.filter((o) => o.id !== selectedOrder.id);
-      setDeletedOrders(updatedOrders);
-      localStorage.setItem("deletedOrders", JSON.stringify(updatedOrders)); // Update localStorage
+      const res = await axios.get("/api/orders/deleted", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setDeletedOrders(res.data);
+    } catch (error) {
+      console.error("Gagal mengambil riwayat hapus:", error);
+    }
+  };
+
+  const handleUndo = async (order) => {
+    if (!order || !order.id) {
+      console.error("Error: Order tidak valid.");
+      return;
+    }
+  
+    try {
+      await axios.put(`/api/orders/${order.id}/restore`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchDeletedOrders();
     } catch (error) {
       console.error("Gagal mengembalikan pesanan:", error);
     }
-    setShowConfirm(false);
   };
-
-  const handlePermanentDelete = async () => {
+  
+  const handlePermanentDelete = async (order) => {
+    if (!order || !order.id) {
+      console.error("Error: Order tidak valid.");
+      return;
+    }
+  
     try {
-      await axios.delete(`/api/orders/${selectedOrder.id}/permanently-delete`);
-      const updatedOrders = deletedOrders.filter((o) => o.id !== selectedOrder.id);
-      setDeletedOrders(updatedOrders);
-      localStorage.setItem("deletedOrders", JSON.stringify(updatedOrders)); // Update localStorage
+      await axios.delete(`/api/orders/${order.id}/hard-delete`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchDeletedOrders();
     } catch (error) {
       console.error("Gagal menghapus permanen pesanan:", error);
     }
-    setShowConfirm(false);
   };
-
+  
   const confirmActionHandler = (action, order) => {
-    setSelectedOrder(order);
-    setConfirmAction(() => async () => {
-      await action();
-      setShowConfirm(false); // Pastikan modal tertutup setelah aksi selesai
-    });
     setShowConfirm(true);
+    setConfirmAction(() => async () => {
+      await action(order);
+      setShowConfirm(false);
+    });
   };
-
+  
   return (
     <>
       <UserNavbar />
@@ -109,6 +120,7 @@ const RiwayatHapus = () => {
           </table>
         )}
       </div>
+
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40">
           <div className="bg-white p-6 rounded shadow-lg w-80 text-center">

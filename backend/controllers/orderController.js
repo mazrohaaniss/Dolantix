@@ -1,7 +1,6 @@
 const Order = require('../models/orderModel');
 
 const orderController = {
-  // Buat pesanan baru
   createOrder: (req, res) => {
     const { event_id, event_category, ticket_category, price } = req.body;
     const user_id = req.user.id;
@@ -18,7 +17,6 @@ const orderController = {
     });
   },
 
-  // Ambil semua pesanan aktif pengguna (yang belum dihapus)
   getUserOrders: (req, res) => {
     const userId = req.user.id;
     Order.getByUser(userId, (err, results) => {
@@ -27,7 +25,6 @@ const orderController = {
     });
   },
 
-  // Ambil semua pesanan yang pending
   getPendingOrders: (req, res) => {
     Order.getAllPending((err, results) => {
       if (err) return res.status(500).json({ message: 'Gagal mengambil pesanan' });
@@ -35,7 +32,6 @@ const orderController = {
     });
   },
 
-  // Setujui pesanan
   approveOrder: (req, res) => {
     const { orderId } = req.params;
     Order.updateStatus(orderId, 'approved', (err) => {
@@ -44,7 +40,6 @@ const orderController = {
     });
   },
 
-  // **Soft Delete Pesanan** (Update deleted_at, bukan hapus permanen)
   softDeleteOrder: (req, res) => {
     const { orderId } = req.params;
 
@@ -54,13 +49,30 @@ const orderController = {
     });
   },
 
-  // **Ambil daftar pesanan yang sudah dihapus**
   getDeletedOrders: (req, res) => {
     Order.getDeletedOrders((err, orders) => {
       if (err) return res.status(500).json({ message: "Gagal mengambil riwayat hapus", error: err });
       res.json(orders);
     });
-  }
+  },
+
+restoreOrder: (req, res) => {
+  const { orderId } = req.params;
+
+  Order.restore(orderId, (err, result) => {
+    if (err) return res.status(500).json({ message: "Gagal mengembalikan pesanan", error: err });
+    res.json({ message: "Pesanan berhasil dikembalikan" });
+  });
+},
+
+hardDeleteOrder: (req, res) => {
+  const { orderId } = req.params;
+
+  Order.hardDelete(orderId, (err, result) => {
+    if (err) return res.status(500).json({ message: "Gagal menghapus permanen pesanan", error: err });
+    res.json({ message: "Pesanan berhasil dihapus secara permanen" });
+  });
+},
 };
 
 module.exports = orderController;
