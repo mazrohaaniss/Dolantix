@@ -10,7 +10,24 @@ const Olahraga = {
   },
 
   getByAdmin: (adminId, callback) => {
-    const query = 'SELECT * FROM olahraga WHERE created_by = ?';
+    const query = `
+      SELECT
+        o.id,
+        o.name,
+        o.description,
+        o.date,
+        o.location,
+        o.poster,
+        o.status,
+        o.created_by,
+        t.event_id,
+        t.category,
+        t.price,
+        t.stock
+      FROM olahraga o
+             LEFT JOIN tickets t ON t.event_category = "olahraga"
+      WHERE o.created_by = ?;
+    `;
     db.query(query, [adminId], callback);
   },
 
@@ -18,6 +35,7 @@ const Olahraga = {
     const query = 'SELECT * FROM olahraga WHERE status = "published"';
     db.query(query, callback);
   },
+
 };
 
 module.exports = Olahraga;

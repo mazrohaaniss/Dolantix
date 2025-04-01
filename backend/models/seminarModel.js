@@ -10,7 +10,24 @@ const Seminar = {
   },
 
   getByAdmin: (adminId, callback) => {
-    const query = 'SELECT * FROM seminar WHERE created_by = ?';
+    const query = `
+      SELECT
+        s.id,
+        s.name,
+        s.description,
+        s.date,
+        s.location,
+        s.poster,
+        s.status,
+        s.created_by,
+        t.event_id,
+        t.category,
+        t.price,
+        t.stock
+      FROM seminar s
+             LEFT JOIN tickets t ON t.event_category = "seminar"
+      WHERE s.created_by = ?;
+    `;
     db.query(query, [adminId], callback);
   },
 

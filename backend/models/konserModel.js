@@ -14,6 +14,28 @@ const Konser = {
     db.query(query, [adminId], callback);
   },
 
+  getByAdmin: (adminId, callback) => {
+    const query = `
+        SELECT 
+            k.id,
+            k.name,
+            k.description,
+            k.date,
+            k.location,
+            k.poster,
+            k.status,
+            k.created_by,
+            t.event_id,
+            t.category,
+            t.price,
+            t.stock
+        FROM konser k
+        LEFT JOIN tickets t ON t.event_category = "konser"
+        WHERE k.created_by = ?;
+    `;
+    db.query(query, [adminId], callback);
+  },
+
   getAllPublished: (callback) => {
     const query = 'SELECT * FROM konser WHERE status = "published"';
     db.query(query, callback);

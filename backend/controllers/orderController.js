@@ -20,9 +20,9 @@ const orderController = {
   getUserOrders: (req, res) => {
     const userId = req.user.id;
     Order.getByUser(userId, (err, results) => {
-      if (err) return res.status(500).json({ message: 'Gagal mengambil pesanan' });
+      if (err) return res.status(500).json({ message: `Gagal mengambil pesanan`});
       res.json(results);
-    });
+    })
   },
 
   getPendingOrders: (req, res) => {

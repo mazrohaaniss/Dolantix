@@ -10,7 +10,24 @@ const Festival = {
   },
 
   getByAdmin: (adminId, callback) => {
-    const query = 'SELECT * FROM festival WHERE created_by = ?';
+    const query = `
+        SELECT 
+            f.id,
+            f.name,
+            f.description,
+            f.date,
+            f.location,
+            f.poster,
+            f.status,
+            f.created_by,
+            t.event_id,
+            t.category,
+            t.price,
+            t.stock
+        FROM festival f
+        LEFT JOIN tickets t ON t.event_category = "festival"
+        WHERE f.created_by = ?;
+    `;
     db.query(query, [adminId], callback);
   },
 
