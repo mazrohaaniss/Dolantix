@@ -15,7 +15,7 @@ const Seminar = {
         s.id,
         s.name,
         s.description,
-        s.date,
+        CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
         s.location,
         s.poster,
         s.status,
@@ -34,6 +34,23 @@ const Seminar = {
   getAllPublished: (callback) => {
     const query = 'SELECT * FROM seminar WHERE status = "published"';
     db.query(query, callback);
+  },
+
+  update: (eventId, eventData, callback) => {
+    const query = `
+        UPDATE seminar 
+        SET name = ?, description = ?, date = ?, location = ?, poster = ?, status = ?
+        WHERE id = ?
+    `;
+    db.query(query, [
+      eventData.name, eventData.description, eventData.date, eventData.location,
+      eventData.poster, eventData.status, eventId
+    ], callback);
+  },
+
+  delete: (eventId, callback) => {
+    const query = `DELETE FROM seminar WHERE id = ?`;
+    db.query(query, [eventId], callback);
   },
 };
 

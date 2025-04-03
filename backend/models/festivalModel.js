@@ -15,7 +15,7 @@ const Festival = {
             f.id,
             f.name,
             f.description,
-            f.date,
+            CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
             f.location,
             f.poster,
             f.status,
@@ -34,6 +34,23 @@ const Festival = {
   getAllPublished: (callback) => {
     const query = 'SELECT * FROM festival WHERE status = "published"';
     db.query(query, callback);
+  },
+
+  update: (eventId, eventData, callback) => {
+    const query = `
+        UPDATE festival 
+        SET name = ?, description = ?, date = ?, location = ?, poster = ?, status = ?
+        WHERE id = ?
+    `;
+    db.query(query, [
+      eventData.name, eventData.description, eventData.date, eventData.location,
+      eventData.poster, eventData.status, eventId
+    ], callback);
+  },
+
+  delete: (eventId, callback) => {
+    const query = `DELETE FROM festival WHERE id = ?`;
+    db.query(query, [eventId], callback);
   },
 };
 

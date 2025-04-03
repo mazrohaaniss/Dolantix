@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const konserController = require('../controllers/konserController');
+const olahragaController = require("../controllers/olahragaController");
 const router = express.Router();
 
 const authenticate = (req, res, next) => {
@@ -17,5 +18,8 @@ const authenticate = (req, res, next) => {
 router.post('/konser', authenticate, konserController.createEvent);
 router.get('/konser/admin', authenticate, konserController.getByAdmin);
 router.get('/konser', konserController.getAllPublished);
+router.put('/konser/:eventId', authenticate, konserController.updateEvent);
+router.delete('/konser/:eventId', authenticate, konserController.deleteEvent);
+
 
 module.exports = router;

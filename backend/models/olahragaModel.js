@@ -15,7 +15,7 @@ const Olahraga = {
         o.id,
         o.name,
         o.description,
-        o.date,
+        CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
         o.location,
         o.poster,
         o.status,
@@ -25,7 +25,7 @@ const Olahraga = {
         t.price,
         t.stock
       FROM olahraga o
-             LEFT JOIN tickets t ON t.event_category = "olahraga"
+      LEFT JOIN tickets t ON t.event_category = "olahraga"
       WHERE o.created_by = ?;
     `;
     db.query(query, [adminId], callback);
@@ -34,6 +34,23 @@ const Olahraga = {
   getAllPublished: (callback) => {
     const query = 'SELECT * FROM olahraga WHERE status = "published"';
     db.query(query, callback);
+  },
+
+  update: (eventId, eventData, callback) => {
+    const query = `
+        UPDATE olahraga 
+        SET name = ?, description = ?, date = ?, location = ?, poster = ?, status = ?
+        WHERE id = ?
+    `;
+    db.query(query, [
+      eventData.nama_event, eventData.description, eventData.date, eventData.location,
+      eventData.poster, eventData.status, eventId
+    ], callback);
+  },
+
+  delete: (eventId, callback) => {
+    const query = `DELETE FROM olahraga WHERE id = ?`;
+    db.query(query, [eventId], callback);
   },
 
 };

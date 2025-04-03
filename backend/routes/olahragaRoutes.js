@@ -17,5 +17,8 @@ const authenticate = (req, res, next) => {
 router.post('/olahraga', authenticate, olahragaController.createEvent);
 router.get('/olahraga/admin', authenticate, olahragaController.getByAdmin);
 router.get('/olahraga', olahragaController.getAllPublished);
+router.put('/olahraga/:eventId', authenticate, olahragaController.updateEvent);
+router.delete('/olahraga/:eventId', authenticate, olahragaController.deleteEvent);
+
 
 module.exports = router;

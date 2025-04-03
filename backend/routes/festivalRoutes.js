@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const festivalController = require('../controllers/festivalController');
+const olahragaController = require("../controllers/olahragaController");
 const router = express.Router();
 
 const authenticate = (req, res, next) => {
@@ -17,5 +18,8 @@ const authenticate = (req, res, next) => {
 router.post('/festival', authenticate, festivalController.createEvent);
 router.get('/festival/admin', authenticate, festivalController.getByAdmin);
 router.get('/festival', festivalController.getAllPublished);
+router.put('/festival/:eventId', authenticate, festivalController.updateEvent);
+router.delete('/festival/:eventId', authenticate, festivalController.deleteEvent);
+
 
 module.exports = router;

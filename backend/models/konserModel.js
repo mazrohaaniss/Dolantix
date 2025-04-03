@@ -20,7 +20,7 @@ const Konser = {
             k.id,
             k.name,
             k.description,
-            k.date,
+            CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
             k.location,
             k.poster,
             k.status,
@@ -39,6 +39,23 @@ const Konser = {
   getAllPublished: (callback) => {
     const query = 'SELECT * FROM konser WHERE status = "published"';
     db.query(query, callback);
+  },
+
+  update: (eventId, eventData, callback) => {
+    const query = `
+        UPDATE konser 
+        SET name = ?, description = ?, date = ?, location = ?, poster = ?, status = ?
+        WHERE id = ?
+    `;
+    db.query(query, [
+      eventData.name, eventData.description, eventData.date, eventData.location,
+      eventData.poster, eventData.status, eventId
+    ], callback);
+  },
+
+  delete: (eventId, callback) => {
+    const query = `DELETE FROM konser WHERE id = ?`;
+    db.query(query, [eventId], callback);
   },
 };
 
