@@ -20,7 +20,7 @@ const Konser = {
             k.id,
             k.name,
             k.description,
-            CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
+            CONVERT_TZ(k.date, '+00:00', '+07:00') AS date,
             k.location,
             k.poster,
             k.status,
@@ -48,7 +48,7 @@ const Konser = {
         WHERE id = ?
     `;
     db.query(query, [
-      eventData.name, eventData.description, eventData.date, eventData.location,
+      eventData.nama_event, eventData.description, eventData.date, eventData.location,
       eventData.poster, eventData.status, eventId
     ], callback);
   },

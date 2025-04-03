@@ -15,7 +15,7 @@ const Festival = {
             f.id,
             f.name,
             f.description,
-            CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
+            CONVERT_TZ(f.date, '+00:00', '+07:00') AS date,
             f.location,
             f.poster,
             f.status,
@@ -43,7 +43,7 @@ const Festival = {
         WHERE id = ?
     `;
     db.query(query, [
-      eventData.name, eventData.description, eventData.date, eventData.location,
+      eventData.nama_event, eventData.description, eventData.date, eventData.location,
       eventData.poster, eventData.status, eventId
     ], callback);
   },

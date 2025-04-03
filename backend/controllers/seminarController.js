@@ -59,9 +59,9 @@ const seminarController = {
 
   updateEvent: (req, res) => {
     const { eventId } = req.params;
-    const { name, description, date, location, poster, status } = req.body;
+    const { nama_event, description, date, location, poster, status } = req.body;
 
-    const eventData = { name, description, date, location, poster, status };
+    const eventData = { nama_event, description, date, location, poster, status };
 
     console.log('Memperbarui acara seminar:', { eventId, ...eventData });
 

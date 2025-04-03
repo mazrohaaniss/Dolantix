@@ -17,6 +17,13 @@ const konserController = {
     });
   },
 
+  getAllPublished: (req, res) => {
+    Konser.getAllPublished((err, results) => {
+      if (err) return res.status(500).json({ message: 'Gagal mengambil data acara' });
+      res.json(results);
+    });
+  },
+
   getByAdmin: (req, res) => {
     const adminId = req.user.id;
     Konser.getByAdmin(adminId,(err, results) => {
@@ -50,18 +57,11 @@ const konserController = {
     });
   },
 
-  getAllPublished: (req, res) => {
-    Konser.getAllPublished((err, results) => {
-      if (err) return res.status(500).json({ message: 'Gagal mengambil data acara' });
-      res.json(results);
-    });
-  },
-
   updateEvent: (req, res) => {
     const { eventId } = req.params;
-    const { name, description, date, location, poster, status } = req.body;
+    const { nama_event, description, date, location, poster, status } = req.body;
 
-    const eventData = { name, description, date, location, poster, status };
+    const eventData = { nama_event, description, date, location, poster, status };
 
     console.log('Memperbarui acara konser:', { eventId, ...eventData });
 

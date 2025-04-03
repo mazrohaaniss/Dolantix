@@ -15,7 +15,7 @@ const Seminar = {
         s.id,
         s.name,
         s.description,
-        CONVERT_TZ(o.date, '+00:00', '+07:00') AS date,
+        CONVERT_TZ(s.date, '+00:00', '+07:00') AS date,
         s.location,
         s.poster,
         s.status,
@@ -43,7 +43,7 @@ const Seminar = {
         WHERE id = ?
     `;
     db.query(query, [
-      eventData.name, eventData.description, eventData.date, eventData.location,
+      eventData.nama_event, eventData.description, eventData.date, eventData.location,
       eventData.poster, eventData.status, eventId
     ], callback);
   },

@@ -1,7 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const konserController = require('../controllers/konserController');
-const olahragaController = require("../controllers/olahragaController");
 const router = express.Router();
 
 const authenticate = (req, res, next) => {
