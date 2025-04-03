@@ -28,10 +28,10 @@ const konserController = {
       results.forEach(row => {
         if (!eventMap[row.id]) {
           eventMap[row.id] = {
+            id: row.id,
             nama_event: row.name,
             description: row.description,
-            waktu: row.waktu,
-            tanggal: row.tanggal,
+            date: row.date,
             location: row.location,
             status: row.status,
             tickets: []

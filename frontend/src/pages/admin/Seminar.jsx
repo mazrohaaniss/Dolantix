@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {ChevronDown, ChevronUp, Edit, Info, MapPin, Plus, Trash2} from "lucide-react";
 import Sidebar from '../../components/navbar';
+import { format } from 'date-fns';
 
 const Seminar = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ name: '', description: '', date: '', location: '', poster: '' });
-  const [selectedEventId, setSelectedEventId] = useState('');
-  const [tickets, setTickets] = useState({});
-  const [ticketCategories, setTicketCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState({ category: '', price: '', stock: '' });
+  const [activeTab, setActiveTab] = useState('add-event');
+  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState('');
+  const [expanded, setExpanded] = useState(null);
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
 
@@ -23,361 +24,202 @@ const Seminar = () => {
   }, [navigate, token, role]);
 
   const fetchEvents = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get('/api/seminar/admin', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Data acara seminar dari server:', res.data);
       setEvents(res.data);
-      res.data.forEach(event => fetchTickets(event.id));
     } catch (err) {
-      console.error('Gagal mengambil acara:', err.response?.status, err.response?.data || err.message);
+      console.error('Failed to fetch events:', err.response?.status, err.response?.data || err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const fetchTickets = async (eventId) => {
-    try {
-      const res = await axios.get(`/api/tickets/${eventId}/seminar`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setTickets(prev => ({ ...prev, [eventId]: res.data }));
-    } catch (err) {
-      console.error('Gagal mengambil tiket:', err.response?.data || err.message);
-    }
-  };
-
-  const handleEventInputChange = (e) => {
-    setNewEvent({ ...newEvent, [e.target.name]: e.target.value });
-  };
-
-  const handleCategoryInputChange = (e) => {
-    setNewCategory({ ...newCategory, [e.target.name]: e.target.value });
-  };
-
-  const handleAddEvent = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('/api/seminar', newEvent, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      console.log('Respon:', res.data);
-      alert('Acara seminar berhasil ditambahkan!');
-      fetchEvents();
-      setNewEvent({ name: '', description: '', date: '', location: '', poster: '' });
-    } catch (err) {
-      console.error('Gagal menambah acara:', err.response?.status, err.response?.data || err.message);
-      alert('Gagal menambah acara: ' + (err.response?.data?.message || err.message));
-    }
-  };
-
-  const handleAddCategory = () => {
-    if (!newCategory.category || !newCategory.price || !newCategory.stock) {
-      alert('Isi semua kolom untuk kategori tiket!');
-      return;
-    }
-    setTicketCategories([...ticketCategories, { ...newCategory }]);
-    setNewCategory({ category: '', price: '', stock: '' });
-  };
-
-  const handleRemoveCategory = (index) => {
-    setTicketCategories(ticketCategories.filter((_, i) => i !== index));
-  };
-
-  const handleSaveTickets = async (e) => {
-    e.preventDefault();
-    if (!selectedEventId) {
-      alert('Pilih acara terlebih dahulu!');
-      return;
-    }
-    if (ticketCategories.length === 0) {
-      alert('Tambah setidaknya satu kategori tiket!');
-      return;
-    }
-
-    const ticketData = {
-      event_id: selectedEventId,
-      event_category: 'seminar',
-      tickets: ticketCategories.map(ticket => ({
-        category: ticket.category,
-        price: parseFloat(ticket.price),
-        stock: parseInt(ticket.stock, 10)
-      }))
-    };
-
-    console.log('Mengirim tiket:', ticketData);
-
-    try {
-      const res = await axios.post('/api/tickets/multiple', ticketData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      console.log('Respon:', res.data);
-      alert('Semua tiket berhasil ditambahkan!');
-      fetchTickets(selectedEventId);
-      setTicketCategories([]);
-      setSelectedEventId('');
-    } catch (err) {
-      console.error('Gagal menambah tiket:', err.response?.data || err.message);
-      alert('Gagal menambah tiket: ' + (err.response?.data?.message || err.message));
-    }
-  };
+  if (isLoading) {
+    return (
+        <div className="flex h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading seminar events data...</p>
+          </div>
+        </div>
+    );
+  }
 
   return (
-    <div className="flex bg-gray-50 min-h-screen items-center justify-center">
-      <Sidebar />
-  
-      <div className="flex-1 p-25">
-      <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
-          <h1 className="text-3xl font-bold text-gray-800">Manajemen Acara Seminar</h1>
-        </div>
+      <div className="flex bg-gray-50 min-h-screen justify-center">
+        <Sidebar />
+        <div className="flex-1 p-25">
+          <header className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <h1 className="text-3xl font-bold text-gray-800">Manajemen Acara Seminar</h1>
+          </header>
 
-        {/* Add Seminar Form */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Tambah Acara Seminar</h2>
-          <form onSubmit={handleAddEvent}>
-            <div className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  name="name"
-                  value={newEvent.name}
-                  onChange={handleEventInputChange}
-                  placeholder="Nama Acara"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <textarea
-                  name="description"
-                  value={newEvent.description}
-                  onChange={handleEventInputChange}
-                  placeholder="Deskripsi"
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="3"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <input
-                    type="datetime-local"
-                    name="date"
-                    value={newEvent.date}
-                    onChange={handleEventInputChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="location"
-                    value={newEvent.location}
-                    onChange={handleEventInputChange}
-                    placeholder="Lokasi"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div>
-                <input
-                  type="text"
-                  name="poster"
-                  value={newEvent.poster}
-                  onChange={handleEventInputChange}
-                  placeholder="URL Poster"
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <button 
-                  type="submit" 
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  Tambah Acara
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+          <div className="mb-6 border-b border-gray-200">
+            <nav className="flex -mb-px">
+              <button
+                  onClick={() => setActiveTab('add-event')}
+                  className={`mr-6 py-4 px-1 ${
+                      activeTab === 'add-event'
+                          ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
+                          : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } transition-colors duration-200 cursor-pointer`}
+              >
+                List Acara
+              </button>
+              <button
+                  onClick={() => setActiveTab('add-tickets')}
+                  className={`mr-6 py-4 px-1 ${
+                      activeTab === 'add-tickets'
+                          ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
+                          : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } transition-colors duration-200 cursor-pointer`}
+              >
+                Tambah Acara
+              </button>
+            </nav>
+          </div>
 
-        {/* Add Tickets Form */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Tambah Tiket</h2>
-          <form onSubmit={handleSaveTickets}>
-            <div className="space-y-4">
-              <div>
-                <select
-                  value={selectedEventId}
-                  onChange={(e) => setSelectedEventId(e.target.value)}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Pilih Acara</option>
-                  {events.map(event => (
-                    <option key={event.id} value={event.id}>{event.name}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {selectedEventId && (
-                <>
-                  <h3 className="text-lg font-medium text-gray-700 mt-4">Tambah Kategori Tiket</h3>
-                  <div className="flex flex-wrap items-end gap-3">
-                    <div>
-                      <input
-                        type="text"
-                        name="category"
-                        value={newCategory.category}
-                        onChange={handleCategoryInputChange}
-                        placeholder="Jenis Tiket (contoh: Reguler)"
-                        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        type="number"
-                        name="price"
-                        value={newCategory.price}
-                        onChange={handleCategoryInputChange}
-                        placeholder="Harga (Rp)"
-                        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        type="number"
-                        name="stock"
-                        value={newCategory.stock}
-                        onChange={handleCategoryInputChange}
-                        placeholder="Stok"
-                        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <button 
-                      type="button" 
-                      onClick={handleAddCategory}
-                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                    >
-                      Tambah Kategori
-                    </button>
-                  </div>
+          <div className="bg-white rounded-lg shadow mb-8 overflow-hidden flex flex-col">
+            {activeTab === 'add-event' && (
+                <table className="w-full border-collapse">
+                  <thead className="bg-white border-b border-gray-200">
+                  <tr className="flex w-full px-2">
+                    <th className="p-3 flex-1/24 text-center">No</th>
+                    <th className="p-3 flex-6/12 text-left">Nama Event</th>
+                    <th className="p-3 flex-1/12 text-left">Waktu</th>
+                    <th className="p-3 flex-2/12 text-left">Tanggal</th>
+                    <th className="p-3 flex-2/12 text-left">Status</th>
+                    <th className="p-3 flex-1/8 text-left"></th>
+                    <th className="p-3 flex-1/16 text-left"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {events.map((event, index) => (
+                      <>
+                        <tr key={event.id} className="border-b border-gray-200 flex w-full px-2 items-center">
+                          <td className="p-3 flex-1/24 text-center ">{index + 1}</td>
+                          <td className="p-3 flex-6/12 truncate">{event.nama_event}</td>
+                          <td className="p-3 flex-1/12 truncate">{format(new Date(event.date), 'HH:mm')}</td>
+                          <td className="p-3 flex-2/12 truncate">{format(new Date(event.date), 'dd/MM/yyyy')}</td>
+                          <td className="p-3 flex-2/12">
+                            <select
+                                className={`pr-2`}
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                              <option className="bg-white" value="published">Published</option>
+                              <option className="bg-white" value="draft">Draft</option>
+                              <option className="bg-white" value="archived">Archived</option>
+                            </select>
+                          </td>
+                          <td className="p-3 flex-1/8 text-left flex gap-2">
+                            <button className="py-1 px-2 flex justify-center items-center bg-white border border-gray-200  rounded-lg text-sm cursor-pointer hover:bg-gray-100"><Edit className={"w-4 "} /></button>
+                            <button className="py-1 px-2 flex justify-center items-center bg-red-100 border border-gray-200  rounded-lg text-sm cursor-pointer hover:bg-red-200"><Trash2 className={"w-4 text-black"} /></button>
+                          </td>
 
-                  {ticketCategories.length > 0 && (
-                    <>
-                      <h4 className="text-md font-medium text-gray-700 mt-4">Kategori Tiket yang Ditambahkan</h4>
-                      <div className="overflow-x-auto rounded-lg border border-gray-200">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Jenis Tiket
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Harga (Rp)
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Stok
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Aksi
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {ticketCategories.map((ticket, index) => (
-                              <tr key={index}>
-                                <td className="px-6 py-4 whitespace-nowrap">{ticket.category}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                  {parseFloat(ticket.price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">{ticket.stock}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                  <button 
-                                    type="button" 
-                                    onClick={() => handleRemoveCategory(index)}
-                                    className="text-red-600 hover:text-red-900"
-                                  >
-                                    Hapus
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <div className="mt-4">
-                        <button 
-                          type="submit"
-                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                        >
-                          OK - Simpan Tiket
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </form>
-        </div>
-
-        {/* Event List */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Daftar Acara dan Tiket</h2>
-          {events.length === 0 ? (
-            <p className="text-gray-500">Tidak ada acara seminar saat ini.</p>
-          ) : (
-            <div className="space-y-6">
-              {events.map(event => (
-                <div key={event.id} className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="text-lg font-medium text-gray-700 mb-3">
-                    {event.name} - {new Date(event.date).toLocaleString()} - {event.location}
-                  </h3>
-                  <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Jenis Tiket
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Harga (Rp)
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Stok
-                          </th>
+                          <td className="p-3 flex-1/16 text-center">
+                            <button className="cursor-pointer" onClick={() => setExpanded(expanded === event.id ? null : event.id)}>
+                              {expanded === event.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                            </button>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {(tickets[event.id] || []).length > 0 ? (
-                          (tickets[event.id] || []).map(ticket => (
-                            <tr key={ticket.id}>
-                              <td className="px-6 py-4 whitespace-nowrap">{ticket.category}</td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                {ticket.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                        {expanded === event.id && (
+                            <tr>
+                              <td colSpan="7" className="bg-gray-50 pt-4 pb-8 px-14 ">
+                                <div className="grid grid-cols-2 gap-10 text-gray-600 ">
+                                  <div>
+                                    <table className="w-full border-collapse ">
+                                      <thead className={"border-b border-gray-200"}>
+                                      <tr className="flex w-full">
+                                        <th className="pt-1 pb-3 px-1 font-medium flex-3/5 text-left">Category</th>
+                                        <th className="pt-1 pb-3 px-1 font-medium flex-2/5 text-left">Price</th>
+                                        <th className="pt-1 pb-3 px-1 font-medium flex-1/5 text-left">Stock</th>
+                                        <th className="pt-1 pb-3 px-1 font-medium flex-2/8 text-left"> </th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                        <td className="p-1 "></td>
+                                      </tr>
+                                      {event.tickets.map((ticket, i) => (
+                                          <tr key={i} className="flex w-full">
+                                            <td className="p-1  flex-3/5 text-left">
+                                              <input type="text" value={ticket.category} className="w-full border border-gray-200 bg-white p-2 rounded" />
+                                            </td>
+                                            <td className="p-1 flex-2/5 text-left">
+                                              <input type="text" value={ticket.price} className="w-full border border-gray-200 bg-white p-2 rounded" />
+                                            </td>
+                                            <td className="p-1 flex-1/5 text-left">
+                                              <input type="text" value={ticket.stock} className="w-full border border-gray-200 bg-white p-2 rounded" />
+                                            </td>
+                                            <td className="p-1 flex-2/8 space-x-1 text-left flex">
+                                              <button className="w-full h-full flex justify-center items-center bg-white border border-gray-200  rounded-lg text-sm cursor-pointer hover:bg-gray-100"><Edit className={"w-4 "} /></button>
+                                              <button className="w-full h-full flex justify-center items-center bg-red-100 border border-gray-200  rounded-lg text-sm cursor-pointer hover:bg-red-200"><Trash2 className={"w-4 text-black"} /></button>
+                                            </td>
+                                          </tr>
+                                      ))}
+
+                                      <tr className="flex w-full">
+                                        <td className="p-1  flex-3/5 text-left">
+                                          <input type="text" placeholder="Masukkan category" className="w-full border border-gray-200 bg-white p-2 rounded" />
+                                        </td>
+                                        <td className="p-1 flex-2/5 text-left">
+                                          <input type="text" placeholder="0" className="w-full border border-gray-200 bg-white p-2 rounded" />
+                                        </td>
+                                        <td className="p-1 flex-1/5 text-left">
+                                          <input type="text" placeholder="0" className="w-full border border-gray-200 bg-white p-2 rounded" />
+                                        </td>
+                                        <td className="p-1 flex-2/8 space-x-1 text-left flex">
+                                          <button className="w-full h-full flex justify-center items-center bg-white cursor-pointer border border-gray-200 rounded-lg text-sm hover:bg-blue-100"><Plus className={"w-5"} /></button>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td className={"p-3 "}>
+                                          <p className=" italic text-gray-500 text-sm">Pastikan harga dan stok yang dimasukkan sudah benar dan sesuai. Klik tombol Edit untuk mengubah harga atau stok</p>
+                                        </td>
+                                      </tr>
+                                      </tbody>
+
+                                    </table>
+
+                                  </div>
+                                  <div className={"space-y-4"}>
+                                    <div className={"p-3 bg-white border border-gray-100 rounded-lg"}>
+                                      <h3 className="font-semibold mb-2 flex gap-2">
+                                        <MapPin className={"w-4"}/>
+                                        Location
+                                      </h3>
+                                      <p className="text-gray-700 text-sm">{event.location}</p>
+                                    </div>
+                                    <div className={"p-3 bg-white border border-gray-100 rounded-lg"}>
+                                      <h3 className="font-semibold mb-2 flex gap-2">
+                                        <Info className={"w-4"}/>
+                                        Description
+                                      </h3>
+                                      <p className="text-gray-700 text-sm">{event.description}</p>
+                                    </div>
+                                  </div>
+                                </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">{ticket.stock}</td>
                             </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
-                              Belum ada tiket untuk acara ini
-                            </td>
-                          </tr>
                         )}
-                      </tbody>
-                    </table>
-                  </div>
+                      </>
+                  ))}
+                  </tbody>
+                </table>
+            )}
+
+            {activeTab === 'add-tickets' && (
+                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                  asa
                 </div>
-              ))}
-            </div>
-          )}
+            )}
+
+          </div>
         </div>
       </div>
-    </div>
-    
   );
 };
 
