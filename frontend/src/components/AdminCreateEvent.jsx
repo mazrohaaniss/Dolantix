@@ -11,10 +11,12 @@ const AdminCreateEvent = ({token, category}) => {
         time: "",
         location: "",
         poster: "",
+        status: "",
     });
 
     const handleChange = (e) => {
         setEventData({ ...eventData, [e.target.name]: e.target.value });
+        console.log(eventData);
     };
 
     const handleSubmit = async (e) => {
@@ -28,10 +30,11 @@ const AdminCreateEvent = ({token, category}) => {
             date: fullDateTime,
             location: eventData.location,
             poster: eventData.poster,
+            status: eventData.status,
         };
 
         try {
-            await axios.post(`/api/${category}/${token}`, formData, {
+            await axios.post(`/api/${category}`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -46,7 +49,7 @@ const AdminCreateEvent = ({token, category}) => {
 
     return (
         <div className="bg-white shadow-sm rounded-lg p-4 border border-gray-200">
-            <h2 className="text-lg font-semibold mb-3 text-gray-800">Tambah Acara Olahraga</h2>
+            <h2 className="text-lg font-semibold mb-3 text-gray-800">Tambah Acara {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
                 <div className="flex gap-2">
@@ -120,6 +123,19 @@ const AdminCreateEvent = ({token, category}) => {
                         onChange={handleChange}
                         className="w-full p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200"
                     />
+                </div>
+
+                <div>
+                    <select
+                        className={`pr-2`}
+                        name="status"
+                        value={eventData.status}
+                        onChange={handleChange}
+                    >
+                        <option className="bg-white" value="published">Published</option>
+                        <option className="bg-white" value="draft">Draft</option>
+                        <option className="bg-white" value="archived">Archived</option>
+                    </select>
                 </div>
 
                 <button

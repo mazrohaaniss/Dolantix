@@ -1,16 +1,36 @@
-import React from 'react';
 import {ChevronDown, ChevronUp, Edit, Info, MapPin, Plus, Trash2} from "lucide-react";
+import {useState} from "react";
+import axios from "axios";
 
-const ListAcara = ({events, onEdit, onExpand}) => {
+const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
+    const [expanded, setExpanded] = useState(null);
+
+
+    const deleteEvent = async (id) => {
+        const confirmDelete = window.confirm("Apakah Anda yakin ingin menghapus acara ini?");
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete(`/api/${category}/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            fetchEvents();
+        } catch (err) {
+            console.error("Gagal menghapus acara:", err);
+            alert("Gagal menghapus acara!");
+        }
+    };
+
+
     return (
         <table className="w-full border-collapse">
             <thead className="bg-white border-b border-gray-200">
             <tr className="flex w-full px-2">
                 <th className="p-3 flex-1/24 text-center">No</th>
                 <th className="p-3 flex-6/12 text-left">Nama Event</th>
-                <th className="p-3 flex-1/12 text-left">Waktu</th>
-                <th className="p-3 flex-2/12 text-left">Tanggal</th>
-                <th className="p-3 flex-2/12 text-left">Status</th>
+                <th className="p-3 flex-1/12 text-center">Waktu</th>
+                <th className="p-3 flex-2/12 text-center">Tanggal</th>
+                <th className="p-3 flex-2/12 text-center">Status</th>
                 <th className="p-3 flex-1/8 text-left"></th>
                 <th className="p-3 flex-1/16 text-left"></th>
             </tr>
@@ -21,19 +41,9 @@ const ListAcara = ({events, onEdit, onExpand}) => {
                     <tr key={event.id} className="border-b border-gray-200 flex w-full px-2 items-center">
                         <td className="p-3 flex-1/24 text-center ">{index + 1}</td>
                         <td className="p-3 flex-6/12 truncate">{event.nama_event}</td>
-                        <td className="p-3 flex-1/12 truncate">{event.date.split('T')[1].split(':00.')[0]}</td>
-                        <td className="p-3 flex-2/12 truncate">{event.date.split('T')[0]}</td>
-                        <td className="p-3 flex-2/12">
-                            <select
-                                className={`pr-2`}
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                            >
-                                <option className="bg-white" value="published">Published</option>
-                                <option className="bg-white" value="draft">Draft</option>
-                                <option className="bg-white" value="archived">Archived</option>
-                            </select>
-                        </td>
+                        <td className="p-3 flex-1/12 truncate text-center">{event.date.split('T')[1].split(':00.')[0]}</td>
+                        <td className="p-3 flex-2/12 truncate text-center">{event.date.split('T')[0]}</td>
+                        <td className="p-3 flex-2/12 text-center">{event.status}</td>
                         <td className="p-3 flex-1/8 text-left flex gap-2">
                             <button
                                 className="py-1 px-2 bg-white border border-gray-200 rounded-lg text-sm cursor-pointer hover:bg-gray-100"
@@ -141,3 +151,7 @@ const ListAcara = ({events, onEdit, onExpand}) => {
         </table>
     );
 }
+
+
+
+export default AdminListEvent;
