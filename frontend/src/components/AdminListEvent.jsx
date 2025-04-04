@@ -1,6 +1,8 @@
-import {ChevronDown, ChevronUp, Edit, Info, MapPin, Plus, Trash2} from "lucide-react";
+import {ChevronDown, ChevronUp, Edit, Trash2} from "lucide-react";
 import {useState} from "react";
 import axios from "axios";
+import AdminListTicket from "./AdminListTicket";
+import toast from "react-hot-toast";
 
 const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
     const [expanded, setExpanded] = useState(null);
@@ -15,9 +17,10 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchEvents();
+            toast.success('Event berhasil dihapus!');
         } catch (err) {
             console.error("Gagal menghapus acara:", err);
-            alert("Gagal menghapus acara!");
+            toast.error('Event gagal dihapus!');
         }
     };
 
@@ -66,84 +69,7 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
                         </td>
                     </tr>
                     {expanded === event.id && (
-                        <tr>
-                            <td colSpan="7" className="bg-gray-50 pt-4 pb-8 px-14 ">
-                                <div className="grid grid-cols-2 gap-10 text-gray-600 ">
-                                    <div>
-                                        <table className="w-full border-collapse ">
-                                            <thead className={"border-b border-gray-200"}>
-                                            <tr className="flex w-full">
-                                                <th className="pt-1 pb-3 px-1 font-medium flex-3/5 text-left">Category</th>
-                                                <th className="pt-1 pb-3 px-1 font-medium flex-2/5 text-left">Price</th>
-                                                <th className="pt-1 pb-3 px-1 font-medium flex-1/5 text-left">Stock</th>
-                                                <th className="pt-1 pb-3 px-1 font-medium flex-2/8 text-left"> </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td className="p-1 "></td>
-                                            </tr>
-                                            {event.tickets.map((ticket, i) => (
-                                                <tr key={i} className="flex w-full">
-                                                    <td className="p-1  flex-3/5 text-left">
-                                                        <input type="text" value={ticket.category} className="w-full border border-gray-200 bg-white p-2 rounded" />
-                                                    </td>
-                                                    <td className="p-1 flex-2/5 text-left">
-                                                        <input type="text" value={ticket.price} className="w-full border border-gray-200 bg-white p-2 rounded" />
-                                                    </td>
-                                                    <td className="p-1 flex-1/5 text-left">
-                                                        <input type="text" value={ticket.stock} className="w-full border border-gray-200 bg-white p-2 rounded" />
-                                                    </td>
-                                                    <td className="p-1 flex-2/8 space-x-1 text-left flex">
-                                                        <button className="w-full h-full flex justify-center items-center bg-white border border-gray-200  rounded-lg text-sm cursor-pointer hover:bg-gray-100"><Edit className={"w-4 "} /></button>
-                                                        <button className="w-full h-full flex justify-center items-center bg-red-100 border border-gray-200  rounded-lg text-sm cursor-pointer hover:bg-red-200"><Trash2 className={"w-4 text-black"} /></button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-
-                                            <tr className="flex w-full">
-                                                <td className="p-1  flex-3/5 text-left">
-                                                    <input type="text" placeholder="Masukkan category" className="w-full border border-gray-200 bg-white p-2 rounded" />
-                                                </td>
-                                                <td className="p-1 flex-2/5 text-left">
-                                                    <input type="text" placeholder="0" className="w-full border border-gray-200 bg-white p-2 rounded" />
-                                                </td>
-                                                <td className="p-1 flex-1/5 text-left">
-                                                    <input type="text" placeholder="0" className="w-full border border-gray-200 bg-white p-2 rounded" />
-                                                </td>
-                                                <td className="p-1 flex-2/8 space-x-1 text-left flex">
-                                                    <button className="w-full h-full flex justify-center items-center bg-white cursor-pointer border border-gray-200 rounded-lg text-sm hover:bg-blue-100"><Plus className={"w-5"} /></button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className={"p-3 "}>
-                                                    <p className=" italic text-gray-500 text-sm">Pastikan harga dan stok yang dimasukkan sudah benar dan sesuai. Klik tombol Edit untuk mengubah harga atau stok</p>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-
-                                        </table>
-
-                                    </div>
-                                    <div className={"space-y-4"}>
-                                        <div className={"p-3 bg-white border border-gray-100 rounded-lg"}>
-                                            <h3 className="font-semibold mb-2 flex gap-2">
-                                                <MapPin className={"w-4"}/>
-                                                Location
-                                            </h3>
-                                            <p className="text-gray-700 text-sm">{event.location}</p>
-                                        </div>
-                                        <div className={"p-3 bg-white border border-gray-100 rounded-lg"}>
-                                            <h3 className="font-semibold mb-2 flex gap-2">
-                                                <Info className={"w-4"}/>
-                                                Description
-                                            </h3>
-                                            <p className="text-gray-700 text-sm">{event.description}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                        <AdminListTicket event={event} category={category} token={token} />
                     )}
                 </>
             ))}

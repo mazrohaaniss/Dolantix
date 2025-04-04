@@ -1,5 +1,6 @@
 import {ArrowLeft} from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const AdminEditEvent = ({selectedEvent, setSelectedEvent, token, category, setActiveTab, fetchEvents}) => {
 
@@ -10,12 +11,13 @@ const AdminEditEvent = ({selectedEvent, setSelectedEvent, token, category, setAc
             await axios.put(`/api/${category}/${selectedEvent.id}`, selectedEvent, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            alert('Event berhasil diperbarui');
+            toast.success('Event berhasil diperbarui!');
             setActiveTab('list-event');
             fetchEvents();
         } catch (err) {
             console.error('Gagal memperbarui event:', err);
-            alert('Gagal memperbarui event');
+            toast.error('Event gagal diperbarui!');
+
         }
     };
 

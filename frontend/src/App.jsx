@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -9,7 +10,7 @@ import Seminar from './pages/admin/Seminar';
 import Festival from './pages/admin/Festival';
 import UserDashboard from './pages/user/Dashboard';
 import Orders from './pages/user/Order';
-import RiwayatHapus from './pages/user/RiwayatHapus'; // Import halaman RiwayatHapus
+import RiwayatHapus from './pages/user/RiwayatHapus';
 import LandingPage from './pages/LandingPage';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />

@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useState} from "react";
+import toast from "react-hot-toast";
 
 
 const AdminCreateEvent = ({token, category}) => {
@@ -38,11 +39,13 @@ const AdminCreateEvent = ({token, category}) => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (window.confirm("Acara berhasil dibuat! Klik OK untuk memuat ulang.")) {
+            toast.success('Event berhasil dibuat!');
+            setTimeout(() => {
                 window.location.reload();
-            }
+            }, 600);
+
         } catch (err) {
-            alert("Gagal membuat acara! Periksa kembali input Anda.");
+            toast.error('Event gagal dibuat!');
             console.error("Error:", err);
         }
     };
