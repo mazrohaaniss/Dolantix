@@ -48,8 +48,8 @@ const AdminCreateEvent = ({token, category}) => {
     };
 
     return (
-        <div className="bg-white shadow-sm rounded-lg p-4 border border-gray-200">
-            <h2 className="text-lg font-semibold mb-3 text-gray-800">Tambah Acara {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+        <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Tambah Acara {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
                 <div className="flex gap-2">
@@ -61,6 +61,7 @@ const AdminCreateEvent = ({token, category}) => {
                             value={eventData.name}
                             onChange={handleChange}
                             className="w-full p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200"
+                            placeholder="Masukkan Nama Acara"
                             required
                         />
                     </div>
@@ -72,6 +73,7 @@ const AdminCreateEvent = ({token, category}) => {
                             value={eventData.location}
                             onChange={handleChange}
                             className="w-full p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200"
+                            placeholder="Masukkan Lokasi Acara"
                             required
                         />
                     </div>
@@ -83,7 +85,8 @@ const AdminCreateEvent = ({token, category}) => {
                         name="description"
                         value={eventData.description}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200"
+                        className="w-full p-2  border border-gray-200 rounded focus:ring focus:ring-blue-200"
+                        placeholder="Masukkan Deskripsi Acara"
                         required
                     ></textarea>
                 </div>
@@ -112,32 +115,31 @@ const AdminCreateEvent = ({token, category}) => {
                             required
                         />
                     </div>
+                    <div className="flex-1">
+                        <label className="text-sm text-gray-700">Status</label>
+                        <select
+                            className={`w-full p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200`}
+                            name="status"
+                            value={eventData.status}
+                            onChange={handleChange}
+                        >
+                            <option className="bg-white" value="published">Published</option>
+                            <option className="bg-white" value="draft">Draft</option>
+                            <option className="bg-white" value="archived">Archived</option>
+                        </select>
+                    </div>
                 </div>
-
-                <div>
+                <div className="flex-1">
                     <label className="text-sm text-gray-700">Poster (URL)</label>
                     <input
                         type="text"
                         name="poster"
                         value={eventData.poster}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200"
+                        className="w-full flex-1 p-2 border border-gray-200 rounded focus:ring focus:ring-blue-200"
+                        placeholder="Masukkan Link Poster"
                     />
                 </div>
-
-                <div>
-                    <select
-                        className={`pr-2`}
-                        name="status"
-                        value={eventData.status}
-                        onChange={handleChange}
-                    >
-                        <option className="bg-white" value="published">Published</option>
-                        <option className="bg-white" value="draft">Draft</option>
-                        <option className="bg-white" value="archived">Archived</option>
-                    </select>
-                </div>
-
                 <button
                     type="submit"
                     className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
