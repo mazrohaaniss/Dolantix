@@ -14,7 +14,9 @@ const authenticate = (req, res, next) => {
   });
 };
 
-router.post('/tickets/multiple', authenticate, ticketController.createTickets);
+router.post('/tickets', authenticate, ticketController.createTicket);
 router.get('/tickets/:eventId/:eventCategory', ticketController.getTicketsByEvent);
+router.put('/tickets/:id', authenticate, ticketController.updateTicket);
+router.delete('/tickets/:id', authenticate, ticketController.deleteTicket);
 
 module.exports = router;
