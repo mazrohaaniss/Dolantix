@@ -25,6 +25,7 @@ const Konser = {
             k.poster,
             k.status,
             k.created_by,
+            t.id AS ticket_id,
             t.event_id,
             t.category,
             t.price,

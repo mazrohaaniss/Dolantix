@@ -20,6 +20,7 @@ const Festival = {
             f.poster,
             f.status,
             f.created_by,
+            t.id AS ticket_id,
             t.event_id,
             t.category,
             t.price,

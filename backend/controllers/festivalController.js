@@ -39,6 +39,7 @@ const festivalController = {
         }
         if (row.category && row.id == row.event_id) {
           eventMap[row.id].tickets.push({
+            id: row.ticket_id,
             category: row.category,
             price: row.price,
             stock: row.stock
