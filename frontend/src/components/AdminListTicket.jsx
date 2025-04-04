@@ -122,8 +122,8 @@ const AdminListTicket = ({event, category, token}) => {
                                     </td>
                                     <td className="p-1 flex-2/5 text-left">
                                         <input
-                                            type="number"
-                                            value={ticket.price}
+                                            type="text"
+                                            value={ticket.price.split(".")[0]}
                                             onChange={(e) => handleTicketChange(i, "price", e.target.value)}
                                             className="w-full border border-gray-200 bg-white p-2 rounded"
                                         />
