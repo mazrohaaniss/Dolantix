@@ -31,6 +31,7 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
             <tr className="flex w-full px-2">
                 <th className="p-3 flex-1/24 text-center">No</th>
                 <th className="p-3 flex-6/12 text-left">Nama Event</th>
+                <th className="p-3 flex-3/12 text-center">Poster</th>
                 <th className="p-3 flex-1/12 text-center">Waktu</th>
                 <th className="p-3 flex-2/12 text-center">Tanggal</th>
                 <th className="p-3 flex-2/12 text-center">Status</th>
@@ -44,9 +45,23 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
                     <tr key={event.id} className="border-b border-gray-200 flex w-full px-2 items-center">
                         <td className="p-3 flex-1/24 text-center ">{index + 1}</td>
                         <td className="p-3 flex-6/12 truncate">{event.nama_event}</td>
+                        <td className="p-3 flex-3/12 flex justify-center">
+                            <img src={event.poster} className={"w-[100px] h-[120px] object-cover"}  alt={"poster"}/>
+                        </td>
                         <td className="p-3 flex-1/12 truncate text-center">{event.date.split('T')[1].split(':00.')[0]}</td>
                         <td className="p-3 flex-2/12 truncate text-center">{event.date.split('T')[0]}</td>
-                        <td className="p-3 flex-2/12 text-center">{event.status}</td>
+                        <td className="p-3 flex-2/12 flex justify-center rounded-full"
+                        >
+                            <div className={`w-fit px-2 text-center rounded-full ${
+                                event.status === 'published' ? 'border border-green-500 text-green-500' :
+                                    event.status === 'draft' ? 'border border-orange-500 text-orange-500' :
+                                        event.status === 'archive' ? 'border border-red-500 text-red-500' :
+                                            'border border-gray-200'
+                            }`}
+                            >
+                                {event.status}
+                            </div>
+                        </td>
                         <td className="p-3 flex-1/8 text-left flex gap-2">
                             <button
                                 className="py-1 px-2 bg-white border border-gray-200 rounded-lg text-sm cursor-pointer hover:bg-gray-100"
