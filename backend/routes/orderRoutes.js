@@ -14,13 +14,23 @@ const authenticate = (req, res, next) => {
   });
 };
 
-router.put('/orders/:orderId/soft-delete', authenticate, orderController.softDeleteOrder);
-router.get('/orders/deleted', authenticate, orderController.getDeletedOrders);
-router.put('/orders/:orderId/restore', authenticate, orderController.restoreOrder);
-router.delete('/orders/:orderId/hard-delete', authenticate, orderController.hardDeleteOrder);
+
 router.post('/orders', authenticate, orderController.createOrder);
+
 router.get('/orders/user', authenticate, orderController.getUserOrders);
-router.get('/orders/pending', authenticate, orderController.getPendingOrders);
+
+router.get('/orders/admin', authenticate, orderController.getByAdmin);
+
+router.get('/orders/deleted', authenticate, orderController.getDeletedOrders);
+
+
 router.put('/orders/approve/:orderId', authenticate, orderController.approveOrder);
+router.put('/orders/reject/:orderId', authenticate, orderController.rejectOrder);
+
+router.put('/orders/:orderId/restore', authenticate, orderController.restoreOrder);
+
+router.put('/orders/:orderId/soft-delete', authenticate, orderController.softDeleteOrder);
+
+router.delete('/orders/:orderId/hard-delete', authenticate, orderController.hardDeleteOrder);
 
 module.exports = router;
