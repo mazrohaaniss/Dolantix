@@ -4,8 +4,9 @@ import { format } from 'date-fns';
 import toast from "react-hot-toast";
 import { Check, X } from 'lucide-react';
 
-const AdminListOrders = ({ orders, fetchOrders, token }) => {
+const AdminListOrderSampah = ({fetchOrdersTrash, ordersTrash, token }) => {
     const [loadingId, setLoadingId] = useState(null);
+
 
     const handleApprove = async (orderId) => {
         const url = `/api/orders/approve/${orderId}`;
@@ -14,7 +15,7 @@ const AdminListOrders = ({ orders, fetchOrders, token }) => {
             await axios.put(url, null, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            fetchOrders();
+            fetchOrdersTrash();
             toast.success('Pesanan disetujui!');
         } catch (err) {
             console.error('Gagal menyetujui:', err);
@@ -31,7 +32,7 @@ const AdminListOrders = ({ orders, fetchOrders, token }) => {
             await axios.put(url, null, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            fetchOrders();
+            fetchOrdersTrash();
             toast.success('Pesanan ditolak!');
         } catch (err) {
             console.error('Gagal menolak:', err);
@@ -41,21 +42,21 @@ const AdminListOrders = ({ orders, fetchOrders, token }) => {
         }
     };
 
-    const handleSoftDelete = async (orderId) => {
-        const url = `/api/orders/${orderId}/soft-delete`;
+    const handleRestore = async (orderId) => {
+        const url = `/api/orders/${orderId}/restore`;
         setLoadingId(url);
         try {
             await axios.put(url, null, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            fetchOrders();
-            toast.success('Pesanan dipindahkan ke sampah!');
+            fetchOrdersTrash();
+            toast.success('Pesanan berhasil dipulihkan!');
             setTimeout(() => {
                 window.location.reload();
             }, 600);
         } catch (err) {
-            console.error('Gagal menghapus:', err);
-            toast.error('Pesanan gagal dipindahkan!');
+            console.error('Gagal memulihkan:', err);
+            toast.error('Pesanan gagal dipulihkan!');
         } finally {
             setLoadingId(null);
         }
@@ -75,7 +76,7 @@ const AdminListOrders = ({ orders, fetchOrders, token }) => {
             </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 text-sm">
-            {orders.map((order) => (
+            {ordersTrash.map((order) => (
                 <tr key={order.order_id} className="hover:bg-gray-50">
                     <td className="py-2 px-4">{order.event_name}</td>
                     <td className="py-2 px-4 capitalize">{order.event_category}</td>
@@ -110,11 +111,11 @@ const AdminListOrders = ({ orders, fetchOrders, token }) => {
                     </td>
                     <td className="py-2 px-4">
                         <button
-                            onClick={() => handleSoftDelete(order.order_id)}
-                            disabled={loadingId === `/api/orders/${order.order_id}/soft-delete`}
-                            className="px-3 py-1 cursor-pointer rounded-md   hover:bg-white border border-gray-200 text-sm"
+                            onClick={() => handleRestore(order.order_id)}
+                            disabled={loadingId === `/api/orders/${order.order_id}/restore`}
+                            className="px-3 py-1 cursor-pointer rounded-md hover:bg-white border border-gray-200 text-sm"
                         >
-                            Move to Trash
+                            Restore
                         </button>
                     </td>
                 </tr>
@@ -122,6 +123,6 @@ const AdminListOrders = ({ orders, fetchOrders, token }) => {
             </tbody>
         </table>
     );
-};
+}
 
-export default AdminListOrders;
+export default AdminListOrderSampah;
