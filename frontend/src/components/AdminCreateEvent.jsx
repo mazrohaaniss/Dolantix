@@ -51,7 +51,7 @@ const AdminCreateEvent = ({token, category}) => {
     };
 
     return (
-        <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200">
+        <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200 text-sm">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Tambah Acara {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">

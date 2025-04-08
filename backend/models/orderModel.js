@@ -32,6 +32,7 @@ const Order = {
              LEFT JOIN olahraga ol ON t.event_id = ol.id AND t.event_category = 'olahraga'
              LEFT JOIN seminar s ON t.event_id = s.id AND t.event_category = 'seminar'
       WHERE o.user_id = ?
+        AND o.deleted_at IS NULL
       ORDER BY
         CASE
           WHEN o.status = 'pending' THEN 1
@@ -69,6 +70,7 @@ const Order = {
              LEFT JOIN olahraga ol ON t.event_id = ol.id AND t.event_category = 'olahraga'
              LEFT JOIN seminar s ON t.event_id = s.id AND t.event_category = 'seminar'
              JOIN users u ON o.user_id = u.id
+      WHERE o.deleted_at IS NULL
       ORDER BY
         CASE
           WHEN o.status = 'pending' THEN 1

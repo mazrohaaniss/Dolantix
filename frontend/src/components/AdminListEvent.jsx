@@ -26,12 +26,12 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
 
 
     return (
-        <table className="w-full border-collapse">
-            <thead className="bg-white border-b border-gray-200">
+        <table className="w-full divide-y divide-gray-200 text-sm">
+            <thead className="h-12 bg-white text-gray-600 text-sm font-semibold">
             <tr className="flex w-full px-2">
                 <th className="p-3 flex-1/24 text-center">No</th>
                 <th className="p-3 flex-6/12 text-left">Nama Event</th>
-                <th className="p-3 flex-3/12 text-center">Poster</th>
+                <th className="p-3 flex-3/12 text-left">Location</th>
                 <th className="p-3 flex-1/12 text-center">Waktu</th>
                 <th className="p-3 flex-2/12 text-center">Tanggal</th>
                 <th className="p-3 flex-2/12 text-center">Status</th>
@@ -39,22 +39,20 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
                 <th className="p-3 flex-1/16 text-left"></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody className={"divide-y divide-gray-200"}>
             {events.map((event, index) => (
                 <>
-                    <tr key={event.id} className="border-b border-gray-200 flex w-full px-2 items-center">
+                    <tr key={event.id} className="flex w-full px-2 items-center hover:bg-gray-50">
                         <td className="p-3 flex-1/24 text-center ">{index + 1}</td>
                         <td className="p-3 flex-6/12 truncate">{event.nama_event}</td>
-                        <td className="p-3 flex-3/12 flex justify-center">
-                            <img src={event.poster} className={"w-[100px] h-[120px] object-cover"}  alt={"poster"}/>
-                        </td>
+                        <td className="p-3 flex-3/12 truncate">{event.location}</td>
                         <td className="p-3 flex-1/12 truncate text-center">{event.date.split('T')[1].split(':00.')[0]}</td>
                         <td className="p-3 flex-2/12 truncate text-center">{event.date.split('T')[0]}</td>
                         <td className="p-3 flex-2/12 flex justify-center rounded-full"
                         >
-                            <div className={`w-fit px-2 text-center rounded-full ${
-                                event.status === 'published' ? 'border border-green-500 text-green-500' :
-                                    event.status === 'draft' ? 'border border-orange-500 text-orange-500' :
+                            <div className={`w-fit px-2 py-1 text-center font-semibold rounded-full ${
+                                event.status === 'published' ? 'text-green-700 bg-green-100' :
+                                    event.status === 'draft' ? 'text-red-700 bg-red-100' :
                                         event.status === 'archive' ? 'border border-red-500 text-red-500' :
                                             'border border-gray-200'
                             }`}
@@ -64,17 +62,17 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
                         </td>
                         <td className="p-3 flex-1/8 text-left flex gap-2">
                             <button
-                                className="py-1 px-2 bg-white border border-gray-200 rounded-lg text-sm cursor-pointer hover:bg-gray-100"
+                                className="py-1 px-2 text-white bg-blue-400  hover:bg-blue-500 rounded-lg text-sm cursor-pointer "
                                 onClick={() => editEvent(event.id)}
                             >
                                 <Edit className="w-4" />
                             </button>
 
                             <button
-                                className="py-1 px-2 flex justify-center items-center bg-red-100 border border-gray-200 rounded-lg text-sm cursor-pointer hover:bg-red-200"
+                                className="py-1 px-2 flex justify-center items-center text-white bg-red-400 hover:bg-red-500 border rounded-lg text-sm cursor-pointer "
                                 onClick={() => deleteEvent(event.id)}
                             >
-                                <Trash2 className="w-4 text-black" />
+                                <Trash2 className="w-4" />
                             </button>
                         </td>
                         <td className="p-3 flex-1/16 text-center">

@@ -22,7 +22,7 @@ const AdminEditEvent = ({selectedEvent, setSelectedEvent, token, category, setAc
     };
 
     return (
-        <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200">
+        <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200 text-sm">
             <button onClick={() => setActiveTab('list-event')} className="flex items-center mb-6 cursor-pointer">
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 <h2 className="text-2xl font-semibold ml-2  text-gray-800 leading-none">Edit Acara {category.charAt(0).toUpperCase() + category.slice(1)}</h2>

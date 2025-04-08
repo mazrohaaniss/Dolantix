@@ -139,15 +139,15 @@ const AdminListTicket = ({event, category, token}) => {
                                     <td className="p-1 flex-2/8 space-x-1 text-left flex">
                                         <button
                                             onClick={() => handleEditTicket(ticket.id, i)}
-                                            className="w-full h-full flex justify-center items-center bg-white border border-gray-200 rounded-lg text-sm cursor-pointer hover:bg-gray-100"
+                                            className="w-full h-full flex justify-center items-center text-white bg-blue-400 hover:bg-blue-500 border rounded-lg text-sm cursor-pointer"
                                         >
                                             <Edit className={"w-4"} />
                                         </button>
                                         <button
                                             onClick={() => handleDeleteTicket(ticket.id)}
-                                            className="w-full h-full flex justify-center items-center bg-red-100 border border-gray-200 rounded-lg text-sm cursor-pointer hover:bg-red-200"
+                                            className="w-full h-full flex justify-center items-center text-white bg-red-400 hover:bg-red-500 border rounded-lg text-sm cursor-pointer"
                                         >
-                                            <Trash2 className={"w-4 text-black"} />
+                                            <Trash2 className={"w-4"} />
                                         </button>
                                     </td>
                                 </tr>
@@ -205,15 +205,15 @@ const AdminListTicket = ({event, category, token}) => {
                         </table>
 
                     </div>
-                    <div className={"space-y-4"}>
-                        <div className={"p-3 bg-white border border-gray-100 rounded-lg"}>
+                    <div className={"flex gap-2"}>
+                        <div className={"p-3 flex-1/3 bg-white border border-gray-100 rounded-lg"}>
                             <h3 className="font-semibold mb-2 flex gap-2">
                                 <MapPin className={"w-4"}/>
-                                Location
+                                Poster
                             </h3>
-                            <p className="text-gray-700 text-sm">{event.location}</p>
+                            <img src={event.poster} className={"w-full h-40 bg-center bg-cover object-cover"} />
                         </div>
-                        <div className={"p-3 bg-white border border-gray-100 rounded-lg"}>
+                        <div className={"p-3 flex-2/3 bg-white border border-gray-100 rounded-lg"}>
                             <h3 className="font-semibold mb-2 flex gap-2">
                                 <Info className={"w-4"}/>
                                 Description
