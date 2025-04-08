@@ -33,4 +33,8 @@ router.put('/orders/:orderId/soft-delete', authenticate, orderController.softDel
 
 router.delete('/orders/:orderId/hard-delete', authenticate, orderController.hardDeleteOrder);
 
+router.get('/orders/stats/completed-orders', authenticate, orderController.getCompletedOrdersCount);
+router.get('/orders/stats/total-users', authenticate, orderController.getTotalUsers);
+router.get('/orders/stats/total-events', authenticate, orderController.getTotalEvents);
+
 module.exports = router;

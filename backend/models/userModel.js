@@ -10,6 +10,11 @@ const User = {
     const query = 'SELECT * FROM users WHERE username = ? OR email = ?';
     db.query(query, [identifier, identifier], callback);
   },
+
+  getTotalUsers: (callback) => {
+    const query = 'SELECT COUNT(*) AS total FROM users';
+    db.query(query, callback);
+  },
 };
 
 module.exports = User;

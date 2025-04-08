@@ -1,4 +1,5 @@
 const Order = require('../models/orderModel');
+const {getTotalUsers} = require("../models/userModel");
 
 const orderController = {
   createOrder: (req, res) => {
@@ -132,6 +133,27 @@ const orderController = {
       }
 
       res.json({ message: "Pesanan berhasil dihapus secara permanen" });
+    });
+  },
+
+  getCompletedOrdersCount: (req, res) => {
+    Order.getCompletedOrdersCount((err, result) => {
+      if (err) return res.status(500).json({ message: 'Gagal mengambil data' });
+      res.json({ totalCompletedOrders: result[0].total });
+    });
+  },
+
+  getTotalUsers: (req, res) => {
+    getTotalUsers((err, result) => {
+      if (err) return res.status(500).json({ message: 'Gagal mengambil data user' });
+      res.json({ totalUsers: result[0].total });
+    });
+  },
+
+  getTotalEvents: (req, res) => {
+    Order.getTotalEvents((err, result) => {
+      if (err) return res.status(500).json({ message: 'Gagal mengambil data event' });
+      res.json({ totalEvents: result[0].total });
     });
   },
 };

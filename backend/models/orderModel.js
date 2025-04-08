@@ -154,6 +154,24 @@ const Order = {
     const sql = "DELETE FROM orders WHERE id = ? AND deleted_at IS NOT NULL";
     db.query(sql, [orderId], callback);
   },
+
+  //stat
+  getCompletedOrdersCount: (callback) => {
+    const query = `SELECT COUNT(*) AS total FROM orders WHERE status = 'approved'`;
+    db.query(query, callback);
+  },
+
+  getTotalEvents: (callback) => {
+    const query = `
+      SELECT 
+        (SELECT COUNT(*) FROM festival) +
+        (SELECT COUNT(*) FROM konser) +
+        (SELECT COUNT(*) FROM olahraga) +
+        (SELECT COUNT(*) FROM seminar)
+        AS total
+    `;
+    db.query(query, callback);
+  },
 };
 
 module.exports = Order;

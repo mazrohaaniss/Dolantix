@@ -72,7 +72,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
           <h1 className="text-3xl font-bold text-gray-800">Dolantix Admin Dashboard</h1>
         </div>
-        <AdminStats />
+        <AdminStats token={token} />
         <div className="mb-6 border-b border-gray-200">
           <nav className="flex -mb-px">
             <button
