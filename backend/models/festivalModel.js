@@ -50,9 +50,31 @@ const Festival = {
   },
 
   delete: (eventId, callback) => {
-    const query = `DELETE FROM festival WHERE id = ?`;
-    db.query(query, [eventId], callback);
-  },
+    const getTicketsQuery = `SELECT id FROM tickets WHERE event_id = ? AND event_category = 'festival'`;
+    db.query(getTicketsQuery, [eventId], (err, tickets) => {
+      if (err) return callback(err);
+
+      const ticketIds = tickets.map(ticket => ticket.id);
+
+      if (ticketIds.length === 0) {
+        const deleteFestival = `DELETE FROM festival WHERE id = ?`;
+        return db.query(deleteFestival, [eventId], callback);
+      }
+
+      const deleteOrders = `DELETE FROM orders WHERE ticket_id IN (?)`;
+      db.query(deleteOrders, [ticketIds], (err) => {
+        if (err) return callback(err);
+
+        const deleteTickets = `DELETE FROM tickets WHERE id IN (?)`;
+        db.query(deleteTickets, [ticketIds], (err) => {
+          if (err) return callback(err);
+
+          const deleteFestival = `DELETE FROM festival WHERE id = ?`;
+          db.query(deleteFestival, [eventId], callback);
+        });
+      });
+    });
+  }
 };
 
 module.exports = Festival;

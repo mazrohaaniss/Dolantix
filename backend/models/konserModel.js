@@ -55,9 +55,31 @@ const Konser = {
   },
 
   delete: (eventId, callback) => {
-    const query = `DELETE FROM konser WHERE id = ?`;
-    db.query(query, [eventId], callback);
-  },
+    const getTicketsQuery = `SELECT id FROM tickets WHERE event_id = ? AND event_category = 'konser'`;
+    db.query(getTicketsQuery, [eventId], (err, tickets) => {
+      if (err) return callback(err);
+
+      const ticketIds = tickets.map(ticket => ticket.id);
+
+      if (ticketIds.length === 0) {
+        const deleteKonser = `DELETE FROM konser WHERE id = ?`;
+        return db.query(deleteKonser, [eventId], callback);
+      }
+
+      const deleteOrders = `DELETE FROM orders WHERE ticket_id IN (?)`;
+      db.query(deleteOrders, [ticketIds], (err) => {
+        if (err) return callback(err);
+
+        const deleteTickets = `DELETE FROM tickets WHERE id IN (?)`;
+        db.query(deleteTickets, [ticketIds], (err) => {
+          if (err) return callback(err);
+
+          const deleteKonser = `DELETE FROM konser WHERE id = ?`;
+          db.query(deleteKonser, [eventId], callback);
+        });
+      });
+    });
+  }
 };
 
 module.exports = Konser;

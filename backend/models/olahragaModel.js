@@ -50,9 +50,36 @@ const Olahraga = {
   },
 
   delete: (eventId, callback) => {
-    const query = `DELETE FROM olahraga WHERE id = ?`;
-    db.query(query, [eventId], callback);
-  },
+    // Langkah 1: Ambil semua tiket yang terkait
+    const getTicketsQuery = `SELECT id FROM tickets WHERE event_id = ? AND event_category = 'olahraga'`;
+    db.query(getTicketsQuery, [eventId], (err, tickets) => {
+      if (err) return callback(err);
+
+      const ticketIds = tickets.map(ticket => ticket.id);
+
+      if (ticketIds.length === 0) {
+        // Tidak ada tiket, langsung hapus event
+        const deleteOlahraga = `DELETE FROM olahraga WHERE id = ?`;
+        return db.query(deleteOlahraga, [eventId], callback);
+      }
+
+      // Langkah 2: Hapus orders yang terkait
+      const deleteOrders = `DELETE FROM orders WHERE ticket_id IN (?)`;
+      db.query(deleteOrders, [ticketIds], (err) => {
+        if (err) return callback(err);
+
+        // Langkah 3: Hapus tickets
+        const deleteTickets = `DELETE FROM tickets WHERE id IN (?)`;
+        db.query(deleteTickets, [ticketIds], (err) => {
+          if (err) return callback(err);
+
+          // Langkah 4: Hapus event olahraga
+          const deleteOlahraga = `DELETE FROM olahraga WHERE id = ?`;
+          db.query(deleteOlahraga, [eventId], callback);
+        });
+      });
+    });
+  }
 
 };
 
