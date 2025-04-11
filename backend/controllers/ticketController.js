@@ -27,6 +27,13 @@ const ticketController = {
     });
   },
 
+  getAllTickets: (req, res) => {
+    Ticket.getAll((err, results) => {
+      if (err) return res.status(500).json({ message: 'Gagal mengambil semua tiket' });
+      res.json(results);
+    });
+  },
+
   getTicketsByEvent: (req, res) => {
     const { eventId, eventCategory } = req.params;
     Ticket.getByEvent(eventId, eventCategory, (err, results) => {

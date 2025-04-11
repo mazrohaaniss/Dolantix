@@ -7,6 +7,11 @@ const Ticket = {
       ticketData.event_id, ticketData.event_category, ticketData.category, ticketData.price, ticketData.stock
     ], callback);
   },
+  
+  getAll: (callback) => {
+    const query = 'SELECT * FROM tickets';
+    db.query(query, callback);
+  },
 
   getByEvent: (eventId, eventCategory, callback) => {
     const query = 'SELECT * FROM tickets WHERE event_id = ? AND event_category = ?';

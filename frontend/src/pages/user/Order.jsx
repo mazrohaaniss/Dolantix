@@ -9,6 +9,7 @@ const Orders = () => {
   const [deletedOrders, setDeletedOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [ticketMap, setTicketMap] = useState({});
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
@@ -16,24 +17,51 @@ const Orders = () => {
     if (!token || role !== "user") {
       navigate("/");
     } else {
-      fetchOrders();
-      fetchDeletedOrders(); // Ambil data pesanan yang sudah dihapus
+      fetchTicketsThenOrders();
     }
   }, [navigate, token, role]);
 
-  // Ambil pesanan aktif (belum dihapus)
+  const fetchTicketsThenOrders = async () => {
+    try {
+      const res = await axios.get("/api/tickets"); // No auth
+      console.log("🎟 Tiket data:", res.data);
+
+      const map = {};
+      res.data.forEach((ticket) => {
+        map[ticket.id] = ticket;
+      });
+      setTicketMap(map);
+
+      // After fetching tickets, fetch orders
+      await fetchOrders();
+      await fetchDeletedOrders();
+    } catch (err) {
+      console.error("Gagal mengambil data tiket:", err);
+    }
+  };
+
   const fetchOrders = async () => {
     try {
       const res = await axios.get("/api/orders/user", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setOrders(res.data);
+      console.log("Order data:", res.data);
+      const transformedOrders = res.data.map(order => ({
+        id: order.order_id,
+        event_name: order.event_name,
+        ticket_id: order.ticket_id,
+        status: order.status,
+        created_at: order.created_at,
+        ticket_category: order.ticket_category,
+        ticket_price: order.ticket_price,
+        event_category: order.event_category
+      }));
+      setOrders(transformedOrders);
     } catch (err) {
       console.error("Gagal mengambil pesanan:", err);
     }
   };
 
-  // Ambil pesanan yang sudah dihapus (soft delete)
   const fetchDeletedOrders = async () => {
     try {
       const res = await axios.get("/api/orders/deleted", {
@@ -45,13 +73,22 @@ const Orders = () => {
     }
   };
 
-  // Tampilkan modal konfirmasi hapus
+  const getTicketInfo = (order) => {
+    return `${order.event_name} - ${order.ticket_category}`;
+  };
+
+  const getTicketPrice = (order) => {
+    return parseFloat(order.ticket_price) || 0;
+  };
+  const getOrderDate = (order) => {
+    return `${order.created_at}`;
+  };
+
   const handleSoftDelete = (order) => {
     setSelectedOrder(order);
     setShowModal(true);
   };
 
-  // Konfirmasi soft delete
   const confirmDelete = async () => {
     if (selectedOrder) {
       try {
@@ -63,11 +100,10 @@ const Orders = () => {
           }
         );
 
-        // Perbarui state setelah soft delete
         setOrders(orders.filter((order) => order.id !== selectedOrder.id));
-        setDeletedOrders([...deletedOrders, selectedOrder]); // Tambah ke daftar riwayat hapus
+        setDeletedOrders([...deletedOrders, selectedOrder]);
 
-        fetchDeletedOrders(); // Refresh daftar riwayat hapus
+        fetchDeletedOrders();
       } catch (err) {
         console.error("Gagal menghapus pesanan:", err);
       }
@@ -79,7 +115,9 @@ const Orders = () => {
     <>
       <UserNavbar />
       <div className="container mx-auto px-4 lg:px-25 py-6 pt-24 pb-20 max-w-full bg-gray-50">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Riwayat Pesanan</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Riwayat Pesanan
+        </h1>
 
         <div className="flex space-x-4 mb-6">
           <button
@@ -89,7 +127,9 @@ const Orders = () => {
             Kembali ke Dashboard
           </button>
           <button
-            onClick={() => navigate("/riwayat-hapus", { state: { deletedOrders } })}
+            onClick={() =>
+              navigate("/riwayat-hapus", { state: { deletedOrders } })
+            }
             className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
           >
             Riwayat Hapus ({deletedOrders.length})
@@ -106,10 +146,7 @@ const Orders = () => {
               <thead className="bg-gray-100">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">
-                    Acara
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">
-                    Kategori Tiket
+                    Tiket
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">
                     Harga (Rp)
@@ -129,15 +166,13 @@ const Orders = () => {
                 {orders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {order.event_id} ({order.event_category})
+                      {getTicketInfo(order)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {order.ticket_category}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {order.price.toLocaleString("id-ID", {
+                      {getTicketPrice(order).toLocaleString("id-ID", {
                         style: "currency",
                         currency: "IDR",
+                        minimumFractionDigits: 0
                       })}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -154,7 +189,7 @@ const Orders = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {new Date(order.created_at).toLocaleString()}
+                      {Date(getOrderDate(order))}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {order.status === "approved" && (
@@ -173,15 +208,26 @@ const Orders = () => {
           </div>
         )}
       </div>
-
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <div className="bg-white p-6 rounded shadow-lg w-80 text-center">
             <h2 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
-            <p className="text-gray-700 mb-4">Apakah kamu yakin ingin menghapus pesanan ini?</p>
+            <p className="text-gray-700 mb-4">
+              Apakah kamu yakin ingin menghapus pesanan ini?
+            </p>
             <div className="flex justify-center space-x-4">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Batal</button>
-              <button onClick={confirmDelete} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Hapus</button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Hapus
+              </button>
             </div>
           </div>
         </div>
