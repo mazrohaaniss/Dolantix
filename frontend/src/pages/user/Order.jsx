@@ -192,14 +192,14 @@ const Orders = () => {
                       {Date(getOrderDate(order))}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {order.status === "approved" && (
+                      
                         <button
                           onClick={() => handleSoftDelete(order)}
                           className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
                         >
                           Hapus
                         </button>
-                      )}
+                     
                     </td>
                   </tr>
                 ))}
