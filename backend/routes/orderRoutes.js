@@ -17,9 +17,9 @@ const authenticate = (req, res, next) => {
 
 router.post('/orders', authenticate, orderController.createOrder);
 router.get('/orders/user', authenticate, orderController.getUserOrders);
+
 router.get('/orders/admin', authenticate, orderController.getByAdmin);
 router.get('/orders/deleted', authenticate, orderController.getDeletedOrders);
-
 
 router.put('/orders/approve/:orderId', authenticate, orderController.approveOrder);
 router.put('/orders/reject/:orderId', authenticate, orderController.rejectOrder);

@@ -53,7 +53,7 @@ const AdminListEvent = ({ events, editEvent, token, fetchEvents, category}) => {
                             <div className={`w-fit px-2 py-1 text-center font-semibold rounded-full ${
                                 event.status === 'published' ? 'text-green-700 bg-green-100' :
                                     event.status === 'draft' ? 'text-red-700 bg-red-100' :
-                                        event.status === 'archive' ? 'border border-red-500 text-red-500' :
+                                        event.status === 'archived' ? 'text-orange-700 bg-orange-100' :
                                             'border border-gray-200'
                             }`}
                             >
